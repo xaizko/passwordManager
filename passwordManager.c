@@ -7,6 +7,8 @@ int main (int argc,char **argv) {
     if (argc > 1) {
 	if (!strcmp(argv[1], "--help")) {
 	    printHelp();
+	} else if (!strcmp(argv[1], "--init")) {
+	    initSetup();
 	}
     } 
 

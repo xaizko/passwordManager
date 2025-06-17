@@ -1,5 +1,4 @@
 #include "cliFunctions.h"
-#include "passwordManager.h"
 
 void printHelp() {
     printf(
@@ -30,4 +29,58 @@ void printHelp() {
     );
 
     return;
+}
+
+void initSetup() {
+    char *home = getHomeEnv();
+
+    //check if setup has already been done
+    char fullpath[512];
+    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", home);
+    if (checkFileExist(fullpath)) {
+	fprintf(stderr, "Master set up already done. Run the program with just ./passwordManager\n");
+	exit(EXIT_FAILURE);
+    }
+
+    create_config_dir();
+
+    FILE *masterConfig;
+    masterConfig = fopen(fullpath, "w");
+
+    fclose(masterConfig);
+    
+    return;
+}
+
+//check if the config file exists
+int checkFileExist(char *path) {
+    return access(path, F_OK) != -1;
+}
+
+//creates directory for config 
+void create_config_dir() {
+    //get home directory
+    char *home = getHomeEnv();
+
+    //builds full string path because mkdir does not support %s
+    char path[512];
+    snprintf(path, sizeof(path), "%s/%s", home, CONFIG_PATH);
+
+    //0700 makes the directory accessible only to the user
+    if (mkdir(path, 0700) == -1) {
+	if (errno != EEXIST) { // only fails if it just just that the dir already exists
+	    perror("Failed to initialize passwordManager directory");
+	    exit(EXIT_FAILURE);
+	}
+    }
+}
+
+//returns the home directory
+char *getHomeEnv() {
+    char *home = getenv("HOME");
+    if (home == NULL) {
+	fprintf(stderr, "Could not get HOME environment.\n");
+	exit(EXIT_FAILURE);
+    }
+    return home;
 }
