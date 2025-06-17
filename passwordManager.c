@@ -4,6 +4,7 @@
 
 int main (int argc,char **argv) {
 
+    //check for flags -- basic cli functionallity 
     if (argc > 1) {
 	if (!strcmp(argv[1], "--help")) {
 	    printHelp();
@@ -12,6 +13,7 @@ int main (int argc,char **argv) {
 	}
     } 
 
+    //main gui entry point
     //int status;
     //GtkApplication *app;
 
