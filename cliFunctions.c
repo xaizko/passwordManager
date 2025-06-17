@@ -42,8 +42,10 @@ void initSetup() {
 	exit(EXIT_FAILURE);
     }
 
+    //create directory to store everything
     create_config_dir();
 
+    //creates master file to store master password and user
     FILE *masterConfig;
     masterConfig = fopen(fullpath, "w");
     if (masterConfig == NULL) {
