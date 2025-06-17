@@ -46,6 +46,12 @@ void initSetup() {
 
     FILE *masterConfig;
     masterConfig = fopen(fullpath, "w");
+    if (masterConfig == NULL) {
+	perror("Error creating master config file");
+	exit(EXIT_FAILURE);
+    } else {
+	printf("Successfully created master config file! Please run the program normally and log in\n");
+    }
 
     fclose(masterConfig);
     
