@@ -18,5 +18,3 @@
 #define AC_WHITE "\x1b[37m"
 #define AC_NORMAL "\x1b[m"
 
-//terminalUI.c function declarations
-void printMenu();
