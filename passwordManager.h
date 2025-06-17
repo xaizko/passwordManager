@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
 
 //Encryption Library
 #include <openssl/sha.h>
