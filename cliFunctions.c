@@ -45,6 +45,35 @@ void initSetup() {
     //create directory to store everything
     create_config_dir();
 
+    //print warning
+    printf("%sNOTE: Please do not forget any of the information you type otherwise it will be very hard to retrieve it.%s\n", AC_RED, AC_NORMAL);
+
+    //get master username
+    char username[21];
+    printf("Type your username (Max of 20 characters): ");
+    if(!fgets(username, sizeof(username), stdin)) {
+	fprintf(stderr, "Failed to read username.\n");
+	exit(EXIT_FAILURE);
+    }
+    //removes trailing new line
+    username[strcspn(username, "\n")] = '\0';
+
+
+    //get master password
+    char password[51];
+    printf("Type your password (Max of 50 characters): ");
+    if (!fgets(password, sizeof(password), stdin)) {
+	fprintf(stderr, "Failed to read username.\n");
+	exit(EXIT_FAILURE);
+    }
+    //removes trailing new line
+    password[strcspn(password, "\n")] = '\0';
+
+    char *hashedPassword = encryptText(password); 
+
+    free(hashedPassword);
+    
+
     //creates master file to store master password and user
     FILE *masterConfig;
     masterConfig = fopen(fullpath, "w");

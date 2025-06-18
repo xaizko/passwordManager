@@ -1,4 +1,5 @@
 #include "passwordManager.h"
+#include "encryption.h"
 
 #define CONFIG_PATH ".config/passwordManager"
 
