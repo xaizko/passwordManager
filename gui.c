@@ -39,6 +39,35 @@ void initWarning(GtkWidget *window) {
 
 void loginScreen(GtkWidget *window) {
     GtkWidget *grid, *userLabel, *passLabel;
-    GtkEntry *userInput, *passInput;
+    GtkWidget *userInput, *passInput;
     GtkButton *submitButton;
+
+    //creates grid
+    grid = gtk_grid_new();
+    gtk_widget_set_halign(grid, GTK_ALIGN_FILL);
+    gtk_widget_set_valign(grid, GTK_ALIGN_FILL);
+    gtk_window_set_child(GTK_WINDOW(window), grid);
+
+    //create uername 
+    userLabel = gtk_label_new("Username");
+    gtk_widget_set_halign(userLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(userLabel, GTK_ALIGN_CENTER);
+    gtk_grid_attach(GTK_GRID(grid), userLabel, 1, 1, 1, 1);
+
+    //create password
+    passLabel = gtk_label_new("Password");
+    gtk_grid_attach(GTK_GRID(grid), passLabel, 1, 2, 1, 1);
+
+    //username entry
+    userInput = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Guest");
+    gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
+
+    //password entry
+    passInput = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(passInput), "Password");
+    gtk_entry_set_visibility(GTK_ENTRY(passInput), FALSE);
+    gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
+    gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT,1 ,1);
 }
+
