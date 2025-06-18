@@ -29,12 +29,59 @@ void hashToHex(FILE *ftpr, unsigned char hashed[]) {
     fprintf(ftpr, "\n");
 }
 
+char *hashToHexUtility(unsigned char *hash) {
+    char *hex = malloc(SHA256_DIGEST_LENGTH * 2 + 1);
+    if (!hex) {
+	return NULL;
+    }
+
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+	snprintf(hex + (i*2), 3, "%02x", hash[i]);
+    }
+    hex[SHA256_DIGEST_LENGTH * 2] = '\0';
+
+    return hex;
+}
+
 //Validating input 
 int verifyCredentials(char *username, char *password) {
-    // Check credentials against stored values
-    printf("Verifying credentials - username: %s\n", username);
-    printf("Verifying credentials - password: [hidden]\n");
+    unsigned char *rawUser = encryptText(username);
+    char *hashedUser = hashToHexUtility(rawUser);
+    free(rawUser);
 
-    // TODO: Implement actual credential verification logic
-    return 0;
+    unsigned char *rawPass = encryptText(password);
+    char *hashedPassword = hashToHexUtility(rawPass);
+    free(rawPass);
+
+    char *login[2] = {hashedUser, hashedPassword};
+
+    //path to master conf file
+    char fullpath[256];
+    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", getenv("HOME"));
+    FILE *masterConf = fopen(fullpath, "r");
+
+    //buffer for reading -- reads 66, chars 64 for hash 1 for \n and \0
+    char line[SHA256_DIGEST_LENGTH * 2 + 2];
+    int index = 0;
+
+    while(fgets(line, sizeof(line), masterConf)) {
+	line[strcspn(line, "\n")] = 0; //remove new line
+	
+	if (index < 2 && strcmp(login[index], line) == 0) {
+	    printf("inputted password hash: %s and hash in file: %s\n", login[index], line);
+	    index++;
+	} else {
+	    printf("inputted password hash: %s and hash in file: %s\n", login[index], line);
+	    break;
+	}
+    }
+
+    fclose(masterConf);
+
+    //frees from hashToHexUtility
+    free(hashedUser);
+    free(hashedPassword);
+
+    return (index == 2); 
 }
+

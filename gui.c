@@ -23,7 +23,6 @@ void activate(GtkApplication *app, gpointer user_data) {
     return;
 }
 
-//Warning page if --init is not ran
 void initWarning(GtkWidget *window) {
     GtkWidget *box, *label;
 
@@ -40,7 +39,6 @@ void initWarning(GtkWidget *window) {
 
 } 
 
-//Front screen log in
 void loginScreen(GtkWidget *window) {
     GtkWidget *grid, *userLabel, *passLabel;
     GtkWidget *userInput, *passInput;
@@ -75,7 +73,6 @@ void loginScreen(GtkWidget *window) {
     gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT,1 ,1);
 
-    //Preparing entry data to be sent
     LoginForm *form = g_new(LoginForm, 1);
     form->userInput = userInput;
     form->passInput = passInput;
@@ -93,13 +90,12 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
 
     int result = verifyCredentials((char *)username, (char *)password);
     
-    if (result == 0) {
+    if (result == 1) {
         g_print("Login successful!\n");
     } else {
         g_print("Login failed!\n");
     }
 
 }
-
 
 
