@@ -61,7 +61,7 @@ void initSetup() {
     //encrypt username
     char *hashedUsername = encryptText(username);
 
-    free(hashedUsername);
+    
 
 
     //get master password
@@ -77,7 +77,6 @@ void initSetup() {
     //encrypts password
     char *hashedPassword = encryptText(password); 
 
-    free(hashedPassword);
     
 
     //creates master file to store master password and user
@@ -89,9 +88,14 @@ void initSetup() {
     } else {
 	printf("Successfully created master config file! Please run the program normally and log in\n");
     }
+    
+    hashToHex(masterConfig, hashedUsername);
+    hashToHex(masterConfig, hashedPassword);
 
     fclose(masterConfig);
-    
+    free(hashedUsername);
+    free(hashedPassword);
+
     return;
 }
 
@@ -127,3 +131,5 @@ char *getHomeEnv() {
     }
     return home;
 }
+
+ 
