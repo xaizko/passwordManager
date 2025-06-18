@@ -2,3 +2,4 @@
 #include "cliFunctions.h"
 
 void activate (GtkApplication *app, gpointer user_data);
+void initWarning(GtkWidget *window);
