@@ -8,5 +8,6 @@ void activate (GtkApplication *app, gpointer user_data) {
     char *home = getHomeEnv();
     snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", home);
 
+    //if (checkFileExist(fullpath)) {
     return;
 }
