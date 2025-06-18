@@ -13,6 +13,8 @@ void activate(GtkApplication *app, gpointer user_data) {
     snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", home);
     if (!checkFileExist(fullpath)) {
 	initWarning(window);
+    } else {
+	loginScreen(window);
     }
     gtk_window_present(GTK_WINDOW(window));
 
@@ -34,3 +36,9 @@ void initWarning(GtkWidget *window) {
     gtk_box_append(GTK_BOX(box), label);
 
 } 
+
+void loginScreen(GtkWidget *window) {
+    GtkWidget *grid, *userLabel, *passLabel;
+    GtkEntry *userInput, *passInput;
+    GtkButton *submitButton;
+}
