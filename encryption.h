@@ -5,3 +5,6 @@
 
 //Encryption functions
 unsigned char *encryptText(char *textToEncrypt);
+
+//Utility functions
+void hashToHex(FILE *ftpr, unsigned char hashed[]);
