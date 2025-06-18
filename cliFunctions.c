@@ -61,9 +61,6 @@ void initSetup() {
     //encrypt username
     char *hashedUsername = encryptText(username);
 
-    
-
-
     //get master password
     char password[51];
     printf("Type your password (Max of 50 characters): ");
@@ -76,8 +73,6 @@ void initSetup() {
 
     //encrypts password
     char *hashedPassword = encryptText(password); 
-
-    
 
     //creates master file to store master password and user
     FILE *masterConfig;
