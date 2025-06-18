@@ -1,6 +1,6 @@
 CC = gcc
 OUTPUT = -o passwordManager
-SRC = passwordManager.c gui.c cliFunctions.c
+SRC = passwordManager.c gui.c cliFunctions.c encryption.c
 
 GTK_CFLAGS = $(shell pkg-config --cflags gtk4)
 GTK_LIBS = $(shell pkg-config --libs gtk4)
