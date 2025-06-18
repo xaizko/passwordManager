@@ -1,10 +1,14 @@
-#include "passwordManager.h"
+#ifndef ENCRYPTION_H
+#define ENCRYPTION_H
 
-//Encryption Library
+#include <stdio.h>
 #include <openssl/sha.h>
 
 //Encryption functions
 unsigned char *encryptText(char *textToEncrypt);
 
 //Utility functions
+int verifyCredentials(char *username, char* password);
 void hashToHex(FILE *ftpr, unsigned char hashed[]);
+
+#endif // ENCRYPTION_H

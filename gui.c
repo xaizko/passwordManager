@@ -1,4 +1,6 @@
+#include <gtk/gtk.h>
 #include "gui.h"
+#include "encryption.h"
 
 void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
@@ -71,11 +73,33 @@ void loginScreen(GtkWidget *window) {
     gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT,1 ,1);
 
+    LoginForm *form = g_new(LoginForm, 1);
+    form->userInput = userInput;
+    form->passInput = passInput;
+
     //submitButton
     submitButton = gtk_button_new_with_label("Log in");
     gtk_grid_attach(GTK_GRID(grid), submitButton, 1, 3, 1, 1);
+    g_signal_connect(submitButton, "clicked", G_CALLBACK(validateLogin), form);
 }
 
-int validateLogin() {
+void validateLogin(GtkWidget *button, gpointer user_data) {
+    LoginForm *form = (LoginForm *)user_data;
+    const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
+    const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->passInput)));
 
+    // Call the verification function from encryption.c
+    int result = verifyCredentials((char *)username, (char *)password);
+    
+    if (result == 0) {
+        g_print("Login successful!\n");
+        // TODO: Handle successful login
+    } else {
+        g_print("Login failed!\n");
+        // TODO: Handle failed login
+    }
+
+    // No need to free form here as it will be needed again
 }
+
+

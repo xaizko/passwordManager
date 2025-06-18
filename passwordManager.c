@@ -1,6 +1,5 @@
-#include "passwordManager.h"
-#include "gui.h"
 #include "cliFunctions.h"
+#include "gui.h"
 
 int main (int argc,char **argv) {
 

@@ -1,3 +1,6 @@
+#ifndef CLI_FUNCTIONS_H
+#define CLI_FUNCTIONS_H
+
 #include "passwordManager.h"
 #include "encryption.h"
 
@@ -13,3 +16,5 @@ void initSetup();
 
 //misc utility
 char *getHomeEnv();
+
+#endif // CLI_FUNCTIONS_H

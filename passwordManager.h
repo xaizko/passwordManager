@@ -1,3 +1,6 @@
+#ifndef PASSWORD_MANAGER_H
+#define PASSWORD_MANAGER_H
+
 //Standard Libraries
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,4 +23,6 @@
 #define AC_CYAN "\x1b[36m"
 #define AC_WHITE "\x1b[37m"
 #define AC_NORMAL "\x1b[m"
+
+#endif // PASSWORD_MANAGER_H
 
