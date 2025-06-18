@@ -58,6 +58,11 @@ void initSetup() {
     //removes trailing new line
     username[strcspn(username, "\n")] = '\0';
 
+    //encrypt username
+    char *hashedUsername = encryptText(username);
+
+    free(hashedUsername);
+
 
     //get master password
     char password[51];
@@ -69,6 +74,7 @@ void initSetup() {
     //removes trailing new line
     password[strcspn(password, "\n")] = '\0';
 
+    //encrypts password
     char *hashedPassword = encryptText(password); 
 
     free(hashedPassword);
