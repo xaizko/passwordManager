@@ -33,10 +33,11 @@ void activate(GtkApplication *app, gpointer user_data);
 
 //Page setups
 void setup_warning_page(AppWidgets *widgets);
+void setup_menu_page(AppWidgets *widgets);
+void setup_login_page(AppWidgets *widgets);
 
 //Utility functions
 void switch_page(AppWidgets *widgets, const char *page_name);
-void loginScreen(GtkWidget *window);
 void validateLogin(GtkWidget *button, gpointer user_data);
 
 #endif // GUI_H
