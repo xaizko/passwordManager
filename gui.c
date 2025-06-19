@@ -21,6 +21,11 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->delete_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->list_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->generate_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+    //Set up entries
+    widgets->userInput = gtk_entry_new();
+    widgets->passInput = gtk_entry_new();
+    widgets->appInput = gtk_entry_new(); 
     
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
@@ -134,7 +139,6 @@ void setup_login_page(AppWidgets *widgets) {
     gtk_grid_attach(GTK_GRID(grid), passLabel, 1, 2, 1, 1);
 
     //username entry
-    widgets->userInput = gtk_entry_new();
     userInput = widgets->userInput;
     gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Guest");
     gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
@@ -193,5 +197,9 @@ void setup_add_page(AppWidgets *widgets) {
     gtk_widget_set_halign(userLabel, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(AppLabel, GTK_ALIGN_CENTER);
     gtk_grid_attach(GTK_GRID(grid), userLabel, 1, 2, 1, 1);
+
+    //set up entries
+    GtkWidget *userInput, passInput, appInput;
+
 }
 
