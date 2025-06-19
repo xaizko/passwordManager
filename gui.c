@@ -217,6 +217,10 @@ void setup_add_page(AppWidgets *widgets) {
     gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
 
     gtk_entry_set_placeholder_text(GTK_ENTRY(passInput), "Password");
+    gtk_entry_set_visibility(GTK_ENTRY(passInput), FALSE);
+    gtk_entry_set_input_purpose(GTK_ENTRY(passInput), GTK_INPUT_PURPOSE_PASSWORD);
+    gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT, 1, 1);
+
 }
 
