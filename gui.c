@@ -5,16 +5,44 @@
 void activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
     window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Login");
+    gtk_window_set_title(GTK_WINDOW(window), "Password Manager");
     gtk_window_set_default_size(GTK_WINDOW(window), 500, 500);
 
+    AppWidgets *widgets = g_malloc(sizeof(AppWidgets));
 
-    //check for master conf file
+    widgets->stack = gtk_stack_new();
+    gtk_window_set_child(GTK_WINDOW(window), widgets->stack);
+
+    //Pages
+    widgets->warning_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->login_page = gtk_grid_new();
+    widgets->menu_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->add_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->delete_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->list_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->generate_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    
+    //Add to stack
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->login_page, "login");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->add_page, "add");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->delete_page, "delete");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->list_page, "list");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->generate_page, "generate");
+
+    //Setup pages
+    setup_warning_page(widgets);
+    //setup_login_page(widgets);
+    //setup_add_page(widgets);
+    //setup_delete_page(widgets);
+    //setup_list_page(widgets);
+    //setup_generate_page(widgets);
+    
+    //Choose initial page
     char fullpath[512];
-    char *home = getHomeEnv();
-    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", home);
+    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", getHomeEnv());
     if (!checkFileExist(fullpath)) {
-	initWarning(window);
+	switch_page(widgets, "warning");
     } else {
 	loginScreen(window);
     }
@@ -23,19 +51,21 @@ void activate(GtkApplication *app, gpointer user_data) {
     return;
 }
 
-void initWarning(GtkWidget *window) {
-    GtkWidget *box, *label;
+void switch_page(AppWidgets *widgets, const char *page_name) {
+    gtk_stack_set_visible_child_name(GTK_STACK(widgets->stack), page_name);
+}
 
-    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_halign(box, GTK_ALIGN_FILL);
-    gtk_widget_set_valign(box, GTK_ALIGN_FILL);
-    gtk_window_set_child(GTK_WINDOW(window), box);
+void setup_warning_page(AppWidgets *widgets) {
+    GtkWidget *warningBox = widgets->warning_page;
+    
+    gtk_widget_set_halign(warningBox, GTK_ALIGN_FILL);
+    gtk_widget_set_valign(warningBox, GTK_ALIGN_FILL);
 
-    label = gtk_label_new("Please run './passwordManager --init' in the terminal before trying to use!");
+    GtkWidget *label = gtk_label_new("Please run './passwordManager --init' in the terminal before trying to use!");
 
     gtk_widget_set_halign(label, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(label, GTK_ALIGN_CENTER);
-    gtk_box_append(GTK_BOX(box), label);
+    gtk_box_append(GTK_BOX(warningBox), label);
 
 } 
 

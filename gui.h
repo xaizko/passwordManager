@@ -11,10 +11,31 @@ typedef struct {
     GtkWidget *passInput;
 } LoginForm;
 
+typedef struct {
+    GtkWidget *stack;
+
+    //Pages
+    GtkWidget *warning_page;
+    GtkWidget *login_page;
+    GtkWidget *menu_page;
+    GtkWidget *add_page;
+    GtkWidget *delete_page;
+    GtkWidget *list_page;
+    GtkWidget *generate_page;
+
+    // Widget for forms
+    GtkWidget *userInput;
+    GtkWidget *passInput;
+} AppWidgets;
+
+//entry function
 void activate(GtkApplication *app, gpointer user_data);
 
-//Gui Components
-void initWarning(GtkWidget *window);
+//Page setups
+void setup_warning_page(AppWidgets *widgets);
+
+//Utility functions
+void switch_page(AppWidgets *widgets, const char *page_name);
 void loginScreen(GtkWidget *window);
 void validateLogin(GtkWidget *button, gpointer user_data);
 
