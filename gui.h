@@ -6,10 +6,6 @@
 #include "passwordManager.h"
 #include "cliFunctions.h"
 
-typedef struct {
-    GtkWidget *userInput;
-    GtkWidget *passInput;
-} LoginForm;
 
 typedef struct {
     GtkWidget *stack;
@@ -28,6 +24,11 @@ typedef struct {
     GtkWidget *passInput;
 } AppWidgets;
 
+typedef struct {
+    GtkWidget *userInput;
+    GtkWidget *passInput;
+    AppWidgets *widget;
+} LoginForm;
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
 

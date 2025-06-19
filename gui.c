@@ -15,8 +15,8 @@ void activate(GtkApplication *app, gpointer user_data) {
 
     //Pages
     widgets->warning_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    widgets->login_page = gtk_grid_new();
     widgets->menu_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->login_page = gtk_grid_new();
     widgets->add_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->delete_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->list_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
@@ -24,6 +24,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
+    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->menu_page, "menu");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->login_page, "login");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->add_page, "add");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->delete_page, "delete");
@@ -32,6 +33,7 @@ void activate(GtkApplication *app, gpointer user_data) {
 
     //Setup pages
     setup_warning_page(widgets);
+    setup_menu_page(widgets);
     setup_login_page(widgets);
     //setup_add_page(widgets);
     //setup_delete_page(widgets);
@@ -137,6 +139,7 @@ void setup_login_page(AppWidgets *widgets) {
     LoginForm *form = g_new(LoginForm, 1);
     form->userInput = userInput;
     form->passInput = passInput;
+    form->widget = widgets;
 
     //submitButton
     submitButton = gtk_button_new_with_label("Log in");
@@ -148,11 +151,12 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
     LoginForm *form = (LoginForm *)user_data;
     const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
     const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->passInput)));
+    AppWidgets *widgets = form->widget;
 
     int result = verifyCredentials((char *)username, (char *)password);
     
     if (result == 1) {
-        g_print("Login successful!\n");
+        switch_page(widgets, "menu");
     } else {
         g_print("Login failed!\n");
     }
