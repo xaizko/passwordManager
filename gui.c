@@ -23,10 +23,16 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->generate_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 
     //Set up entries
+    
+    //Login entries
     widgets->userInput = gtk_entry_new();
     widgets->passInput = gtk_entry_new();
+
+    //Add page entries
     widgets->appInput = gtk_entry_new(); 
-    
+    widgets->addUserInput = gtk_entry_new();
+    widgets->addPassInput = gtk_entry_new();
+
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->menu_page, "menu");
@@ -144,7 +150,6 @@ void setup_login_page(AppWidgets *widgets) {
     gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
 
     //password entry
-    widgets->passInput = gtk_entry_new();
     passInput = widgets->passInput;
     gtk_entry_set_placeholder_text(GTK_ENTRY(passInput), "Password");
     gtk_entry_set_visibility(GTK_ENTRY(passInput), FALSE);
@@ -188,18 +193,30 @@ void setup_add_page(AppWidgets *widgets) {
     gtk_widget_set_valign(grid, GTK_ALIGN_FILL);
 
     //set up labels
-    GtkWidget *AppLabel = gtk_label_new("Application");
-    gtk_widget_set_halign(AppLabel, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(AppLabel, GTK_ALIGN_CENTER);
-    gtk_grid_attach(GTK_GRID(grid), AppLabel, 1, 1, 1, 1);
+    GtkWidget *appLabel = gtk_label_new("Application");
+    gtk_widget_set_halign(appLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(appLabel, GTK_ALIGN_CENTER);
+    gtk_grid_attach(GTK_GRID(grid), appLabel, 1, 1, 1, 1);
 
     GtkWidget *userLabel = gtk_label_new("Username");
-    gtk_widget_set_halign(userLabel, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign(AppLabel, GTK_ALIGN_CENTER);
     gtk_grid_attach(GTK_GRID(grid), userLabel, 1, 2, 1, 1);
 
-    //set up entries
-    GtkWidget *userInput, passInput, appInput;
+    GtkWidget *passLabel = gtk_label_new("Password");
+    gtk_grid_attach(GTK_GRID(grid), passLabel, 1, 3, 1, 1);
 
+    //set up entries
+    GtkWidget *userInput, *passInput, *appInput;
+    appInput = widgets->appInput;
+    userInput = widgets->addUserInput;
+    passInput = widgets->addPassInput;
+
+    gtk_entry_set_placeholder_text(GTK_ENTRY(appInput), "Application");
+    gtk_grid_attach_next_to(GTK_GRID(grid), appInput, appLabel, GTK_POS_RIGHT, 1, 1);
+
+    gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Username");
+    gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
+
+    gtk_entry_set_placeholder_text(GTK_ENTRY(passInput), "Password");
+    gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT, 1, 1);
 }
 

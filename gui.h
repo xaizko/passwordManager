@@ -19,10 +19,14 @@ typedef struct {
     GtkWidget *list_page;
     GtkWidget *generate_page;
 
-    // Widget for forms
+    // Widget for login form
     GtkWidget *userInput;
     GtkWidget *passInput;
+
+    //Widgets for adding form
     GtkWidget *appInput;
+    GtkWidget *addUserInput;
+    GtkWidget *addPassInput;
 } AppWidgets;
 
 typedef struct {
@@ -30,6 +34,7 @@ typedef struct {
     GtkWidget *passInput;
     AppWidgets *widget;
 } LoginForm;
+
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
 
