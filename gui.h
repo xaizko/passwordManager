@@ -22,6 +22,7 @@ typedef struct {
     // Widget for forms
     GtkWidget *userInput;
     GtkWidget *passInput;
+    GtkWidget *appInput;
 } AppWidgets;
 
 typedef struct {
@@ -36,9 +37,11 @@ void activate(GtkApplication *app, gpointer user_data);
 void setup_warning_page(AppWidgets *widgets);
 void setup_menu_page(AppWidgets *widgets);
 void setup_login_page(AppWidgets *widgets);
+void setup_add_page(AppWidgets *widgets);
 
 //Utility functions
 void switch_page(AppWidgets *widgets, const char *page_name);
+void handle_page_switch(GtkButton *button, gpointer user_data);
 void validateLogin(GtkWidget *button, gpointer user_data);
 
 #endif // GUI_H
