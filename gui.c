@@ -17,7 +17,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->warning_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->menu_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->login_page = gtk_grid_new();
-    widgets->add_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    widgets->add_page = gtk_grid_new();
     widgets->delete_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->list_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->generate_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
@@ -35,7 +35,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     setup_warning_page(widgets);
     setup_menu_page(widgets);
     setup_login_page(widgets);
-    //setup_add_page(widgets);
+    setup_add_page(widgets);
     //setup_delete_page(widgets);
     //setup_list_page(widgets);
     //setup_generate_page(widgets);
@@ -55,6 +55,16 @@ void activate(GtkApplication *app, gpointer user_data) {
 
 void switch_page(AppWidgets *widgets, const char *page_name) {
     gtk_stack_set_visible_child_name(GTK_STACK(widgets->stack), page_name);
+}
+
+void handle_page_switch(GtkButton *button, gpointer user_data) {
+    AppWidgets *widgets = (AppWidgets *)user_data;
+    const char *page_name = g_object_get_data(G_OBJECT(button), "page");
+    if (page_name) {
+	switch_page(widgets, page_name);
+    } else{
+	g_warning("No page found with that name!");
+    }
 }
 
 //builds the warning page
@@ -89,18 +99,20 @@ void setup_menu_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(menu), gen_btn);
 
     //Navigation hooks
-    g_signal_connect_swapped(add_btn, "clicked", G_CALLBACK(switch_page), widgets);
-    g_signal_connect_swapped(del_btn, "clicked", G_CALLBACK(switch_page), widgets);
-    g_signal_connect_swapped(list_btn, "clicked", G_CALLBACK(switch_page), widgets);
-    g_signal_connect_swapped(gen_btn, "clicked", G_CALLBACK(switch_page), widgets);
-
-    //Name of page to send
     g_object_set_data(G_OBJECT(add_btn), "page", "add");
+    g_signal_connect(add_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
+
     g_object_set_data(G_OBJECT(del_btn), "page", "delete");
-    g_object_set_data(G_OBJECT(list_btn), "page", "show");
+    g_signal_connect(del_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
+
+    g_object_set_data(G_OBJECT(list_btn), "page", "list");
+    g_signal_connect(list_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
+
     g_object_set_data(G_OBJECT(gen_btn), "page", "generate");
+    g_signal_connect(gen_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
+// builds the login page
 void setup_login_page(AppWidgets *widgets) {
     GtkWidget *userLabel, *passLabel;
     GtkWidget *submitButton;
@@ -147,6 +159,7 @@ void setup_login_page(AppWidgets *widgets) {
     g_signal_connect(submitButton, "clicked", G_CALLBACK(validateLogin), form);
 }
 
+//necessary for checking login 
 void validateLogin(GtkWidget *button, gpointer user_data) {
     LoginForm *form = (LoginForm *)user_data;
     const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
@@ -163,4 +176,22 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
 
 }
 
+//setup for adding passwords
+void setup_add_page(AppWidgets *widgets) {
+    //set up grid
+    GtkWidget *grid = widgets->add_page;
+    gtk_widget_set_halign(grid, GTK_ALIGN_FILL);
+    gtk_widget_set_valign(grid, GTK_ALIGN_FILL);
+
+    //set up labels
+    GtkWidget *AppLabel = gtk_label_new("Application");
+    gtk_widget_set_halign(AppLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(AppLabel, GTK_ALIGN_CENTER);
+    gtk_grid_attach(GTK_GRID(grid), AppLabel, 1, 1, 1, 1);
+
+    GtkWidget *userLabel = gtk_label_new("Username");
+    gtk_widget_set_halign(userLabel, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(AppLabel, GTK_ALIGN_CENTER);
+    gtk_grid_attach(GTK_GRID(grid), userLabel, 1, 2, 1, 1);
+}
 
