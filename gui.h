@@ -6,16 +6,39 @@
 #include "passwordManager.h"
 #include "cliFunctions.h"
 
+
+typedef struct {
+    GtkWidget *stack;
+
+    //Pages
+    GtkWidget *warning_page;
+    GtkWidget *login_page;
+    GtkWidget *menu_page;
+    GtkWidget *add_page;
+    GtkWidget *delete_page;
+    GtkWidget *list_page;
+    GtkWidget *generate_page;
+
+    // Widget for forms
+    GtkWidget *userInput;
+    GtkWidget *passInput;
+} AppWidgets;
+
 typedef struct {
     GtkWidget *userInput;
     GtkWidget *passInput;
+    AppWidgets *widget;
 } LoginForm;
-
+//entry function
 void activate(GtkApplication *app, gpointer user_data);
 
-//Gui Components
-void initWarning(GtkWidget *window);
-void loginScreen(GtkWidget *window);
+//Page setups
+void setup_warning_page(AppWidgets *widgets);
+void setup_menu_page(AppWidgets *widgets);
+void setup_login_page(AppWidgets *widgets);
+
+//Utility functions
+void switch_page(AppWidgets *widgets, const char *page_name);
 void validateLogin(GtkWidget *button, gpointer user_data);
 
 #endif // GUI_H

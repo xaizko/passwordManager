@@ -68,10 +68,8 @@ int verifyCredentials(char *username, char *password) {
 	line[strcspn(line, "\n")] = 0; //remove new line
 	
 	if (index < 2 && strcmp(login[index], line) == 0) {
-	    printf("inputted password hash: %s and hash in file: %s\n", login[index], line);
 	    index++;
 	} else {
-	    printf("inputted password hash: %s and hash in file: %s\n", login[index], line);
 	    break;
 	}
     }
