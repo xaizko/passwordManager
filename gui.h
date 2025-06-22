@@ -35,6 +35,13 @@ typedef struct {
     AppWidgets *widget;
 } LoginForm;
 
+typedef struct {
+    GtkWidget *appInput;
+    GtkWidget *userInput;
+    GtkWidget *passInput;
+    AppWidgets *widget;
+} addForm;
+
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
 

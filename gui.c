@@ -224,3 +224,7 @@ void setup_add_page(AppWidgets *widgets) {
 
 }
 
+void addToPage(GtkWidget *button, gpointer *userData) {
+
+}
+
