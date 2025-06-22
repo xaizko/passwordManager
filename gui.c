@@ -160,7 +160,7 @@ void setup_login_page(AppWidgets *widgets) {
     LoginForm *form = g_new(LoginForm, 1);
     form->userInput = userInput;
     form->passInput = passInput;
-    form->widget = widgets;
+    form->widgets = widgets;
 
     //submitButton
     submitButton = gtk_button_new_with_label("Log in");
@@ -173,7 +173,7 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
     LoginForm *form = (LoginForm *)user_data;
     const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
     const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->passInput)));
-    AppWidgets *widgets = form->widget;
+    AppWidgets *widgets = form->widgets;
 
     int result = verifyCredentials((char *)username, (char *)password);
     
@@ -222,9 +222,28 @@ void setup_add_page(AppWidgets *widgets) {
     //gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT, 1, 1);
 
+    //populate form data to pass
+    AddForm *form = g_new(AddForm, 1);
+    form->appInput = appInput;
+    form->userInput = userInput;
+    form->passInput = passInput;
+    form->widgets = widgets; 
+
+    //submit button
+    GtkWidget *submitButton = gtk_button_new_with_label("Add To Vault");
+    gtk_grid_attach(GTK_GRID(grid), submitButton, 1, 4, 1, 1);
+    g_signal_connect(submitButton, "clicked", G_CALLBACK(addToFile), form);
+
 }
 
-void addToPage(GtkWidget *button, gpointer *userData) {
+void addToFile(GtkWidget *button, gpointer *userData) {
+    AddForm *form = (AddForm *)userData;
+    const char *application = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->appInput)));
+    const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
+    const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->passInput)));
+    AppWidgets *widgets = form->widgets;
 
+    printf("-----Test 1-----\n");
+    printf("App: %s\nUser: %s\nPass: %s\n", application, username, password);
 }
 
