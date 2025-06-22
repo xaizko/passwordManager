@@ -32,15 +32,15 @@ typedef struct {
 typedef struct {
     GtkWidget *userInput;
     GtkWidget *passInput;
-    AppWidgets *widget;
+    AppWidgets *widgets;
 } LoginForm;
 
 typedef struct {
     GtkWidget *appInput;
     GtkWidget *userInput;
     GtkWidget *passInput;
-    AppWidgets *widget;
-} addForm;
+    AppWidgets *widgets;
+} AddForm;
 
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
@@ -55,5 +55,6 @@ void setup_add_page(AppWidgets *widgets);
 void switch_page(AppWidgets *widgets, const char *page_name);
 void handle_page_switch(GtkButton *button, gpointer user_data);
 void validateLogin(GtkWidget *button, gpointer user_data);
+void addToFile(GtkWidget *button, gpointer *userData);
 
 #endif // GUI_H
