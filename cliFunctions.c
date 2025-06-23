@@ -35,9 +35,9 @@ void initSetup() {
     char *home = getHomeEnv();
 
     //check if setup has already been done
-    char fullpath[512];
-    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", home);
-    if (checkFileExist(fullpath)) {
+    char masterLoginPath[512];
+    snprintf(masterLoginPath, sizeof(masterLoginPath), "%s/%s/master.conf", home, CONFIG_PATH);
+    if (checkFileExist(masterLoginPath)) {
 	fprintf(stderr, "Master set up already done. Run the program with just ./passwordManager\n");
 	exit(EXIT_FAILURE);
     }
@@ -76,7 +76,7 @@ void initSetup() {
 
     //creates master file to store master password and user
     FILE *masterConfig;
-    masterConfig = fopen(fullpath, "w");
+    masterConfig = fopen(masterLoginPath, "w");
     if (masterConfig == NULL) {
 	perror("Error creating master config file");
 	exit(EXIT_FAILURE);
@@ -84,9 +84,11 @@ void initSetup() {
 	printf("Successfully created master config file! Please run the program normally and log in\n");
     }
     
+    //converts raw hash to hex for easy reversability
     hashToHex(masterConfig, hashedUsername);
     hashToHex(masterConfig, hashedPassword);
 
+    //free memory
     fclose(masterConfig);
     free(hashedUsername);
     free(hashedPassword);
