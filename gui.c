@@ -224,10 +224,11 @@ void setup_add_page(AppWidgets *widgets) {
 
     //populate form data to pass
     AddForm *form = g_new(AddForm, 1);
+
     form->appInput = appInput;
-    form->userInput = userInput;
-    form->passInput = passInput;
-    form->widgets = widgets; 
+    form->login.userInput = userInput;
+    form->login.passInput = passInput;
+    form->login.widgets = widgets; 
 
     //submit button
     GtkWidget *submitButton = gtk_button_new_with_label("Add To Vault");
@@ -239,9 +240,9 @@ void setup_add_page(AppWidgets *widgets) {
 void addToFile(GtkWidget *button, gpointer *userData) {
     AddForm *form = (AddForm *)userData;
     const char *application = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->appInput)));
-    const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->userInput)));
-    const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->passInput)));
-    AppWidgets *widgets = form->widgets;
+    const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.userInput)));
+    const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.passInput)));
+    AppWidgets *widgets = form->login.widgets;
 
     printf("-----Test 1-----\n");
     printf("App: %s\nUser: %s\nPass: %s\n", application, username, password);
