@@ -64,10 +64,12 @@ void activate(GtkApplication *app, gpointer user_data) {
     return;
 }
 
+//switches initial login page
 void switch_page(AppWidgets *widgets, const char *page_name) {
     gtk_stack_set_visible_child_name(GTK_STACK(widgets->stack), page_name);
 }
 
+//switches pages based on name set up in activate function
 void handle_page_switch(GtkButton *button, gpointer user_data) {
     AppWidgets *widgets = (AppWidgets *)user_data;
     const char *page_name = g_object_get_data(G_OBJECT(button), "page");
@@ -157,6 +159,7 @@ void setup_login_page(AppWidgets *widgets) {
     gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT,1 ,1);
 
+    //populating data to send
     LoginForm *form = g_new(LoginForm, 1);
     form->userInput = userInput;
     form->passInput = passInput;
@@ -198,9 +201,11 @@ void setup_add_page(AppWidgets *widgets) {
     gtk_widget_set_valign(appLabel, GTK_ALIGN_CENTER);
     gtk_grid_attach(GTK_GRID(grid), appLabel, 1, 1, 1, 1);
 
+    //user label
     GtkWidget *userLabel = gtk_label_new("Username");
     gtk_grid_attach(GTK_GRID(grid), userLabel, 1, 2, 1, 1);
 
+    //password label
     GtkWidget *passLabel = gtk_label_new("Password");
     gtk_grid_attach(GTK_GRID(grid), passLabel, 1, 3, 1, 1);
 
@@ -210,12 +215,15 @@ void setup_add_page(AppWidgets *widgets) {
     userInput = widgets->addUserInput;
     passInput = widgets->addPassInput;
 
+    //app entry
     gtk_entry_set_placeholder_text(GTK_ENTRY(appInput), "Application");
     gtk_grid_attach_next_to(GTK_GRID(grid), appInput, appLabel, GTK_POS_RIGHT, 1, 1);
 
+    //user entry
     gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Username");
     gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
 
+    //password entry
     gtk_entry_set_placeholder_text(GTK_ENTRY(passInput), "Password");
     //gtk_entry_set_visibility(GTK_ENTRY(passInput), FALSE);
     //gtk_entry_set_input_purpose(GTK_ENTRY(passInput), GTK_INPUT_PURPOSE_PASSWORD);
@@ -238,6 +246,8 @@ void setup_add_page(AppWidgets *widgets) {
 }
 
 void addToFile(GtkWidget *button, gpointer *userData) {
+
+    //extracting data
     AddForm *form = (AddForm *)userData;
     const char *application = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->appInput)));
     const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.userInput)));
