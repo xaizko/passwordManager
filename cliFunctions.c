@@ -88,8 +88,20 @@ void initSetup() {
     hashToHex(masterConfig, hashedUsername);
     hashToHex(masterConfig, hashedPassword);
 
+    //formatting path for fopen
+    char storagePath[512];
+    snprintf(storagePath, sizeof(storagePath), "%s/%s/storage.db", home, CONFIG_PATH);
+
+    FILE *masterStorage;
+    masterStorage = fopen(storagePath, "w");
+    if (masterStorage == NULL) {
+	perror("Error creating database file");
+	exit(EXIT_FAILURE);
+    }
+
     //free memory
     fclose(masterConfig);
+    fclose(masterStorage);
     free(hashedUsername);
     free(hashedPassword);
 
