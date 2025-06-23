@@ -92,6 +92,7 @@ void initSetup() {
     char storagePath[512];
     snprintf(storagePath, sizeof(storagePath), "%s/%s/storage.db", home, CONFIG_PATH);
 
+    //creating storage file 
     FILE *masterStorage;
     masterStorage = fopen(storagePath, "w");
     if (masterStorage == NULL) {
