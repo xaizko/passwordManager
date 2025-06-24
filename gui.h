@@ -49,10 +49,16 @@ void setup_menu_page(AppWidgets *widgets);
 void setup_login_page(AppWidgets *widgets);
 void setup_add_page(AppWidgets *widgets);
 
-//Utility functions
+//Core functionality functions
 void switch_page(AppWidgets *widgets, const char *page_name);
 void handle_page_switch(GtkButton *button, gpointer user_data);
+
+//Login functionality
 void validateLogin(GtkWidget *button, gpointer user_data);
+
+//Password storing functionality
 void addToFile(GtkWidget *button, gpointer *userData);
+char *getMasterStoragePath();
+
 
 #endif // GUI_H
