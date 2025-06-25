@@ -256,5 +256,17 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 
     printf("-----Test 1-----\n");
     printf("App: %s\nUser: %s\nPass: %s\n", application, username, password);
+
+    char *storagePath = getMasterStoragePath();
+    printf("%s\n", storagePath);
 }
 
+char *getMasterStoragePath() {
+    char *home = getHomeEnv();
+    size_t len = strlen(home) + strlen("/.config/passwordManager/storage.db") + 1;
+    char *storagePath = malloc(len);
+    if (storagePath != NULL) {
+	snprintf(storagePath, len, "%s/.config/passwordManager/storage.db", home);
+    }
+    return storagePath;
+}
