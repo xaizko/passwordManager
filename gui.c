@@ -270,10 +270,10 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     strcat(storedString, username);
     strcat(storedString, "|");
     strcat(storedString, password);
-    strcat(storedString, "\n");
 
     char *rawHash = encryptText(storedString);
     char *hexHash = hashToHexUtility(rawHash);
+    strcat(hexHash, "\n");
     free(rawHash);
 
     fprintf(storageFile, hexHash); 
