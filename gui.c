@@ -258,9 +258,27 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     printf("App: %s\nUser: %s\nPass: %s\n", application, username, password);
 
     char *storagePath = getMasterStoragePath();
-    printf("%s\n", storagePath);
+
+    FILE *storageFile = fopen(storagePath, "a");
+
+    //allocate enough memory to store string
+    char *storedString = malloc(strlen(application) + strlen(username) + strlen(password) + 1);
+
+    //copy and concatenate to add everything
+    strcpy(storedString, application);
+    strcat(storedString, "|");
+    strcat(storedString, username);
+    strcat(storedString, "|");
+    strcat(storedString, password);
+    strcat(storedString, "\n");
+
+    fprintf(storageFile, storedString); 
 
     free(storagePath);
+    free(storedString);
+    fclose(storageFile);
+
+    return;
 }
 
 char *getMasterStoragePath() {
