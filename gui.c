@@ -259,6 +259,8 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 
     char *storagePath = getMasterStoragePath();
     printf("%s\n", storagePath);
+
+    free(storagePath);
 }
 
 char *getMasterStoragePath() {
