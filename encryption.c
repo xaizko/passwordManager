@@ -8,6 +8,11 @@ typedef struct {
     GtkWidget *passInput;
 } LoginFormType;
 
+char *encryptText(char *textToEncrypt) {
+    
+
+}
+
 //hashes text
 unsigned char *hashText(char *textToEncrypt) {
     unsigned char *hash = malloc(SHA256_DIGEST_LENGTH);
@@ -45,11 +50,11 @@ char *hashToHexUtility(unsigned char *hash) {
 
 //Validating input 
 int verifyCredentials(char *username, char *password) {
-    unsigned char *rawUser = encryptText(username);
+    unsigned char *rawUser = hashText(username);
     char *hashedUser = hashToHexUtility(rawUser);
     free(rawUser);
 
-    unsigned char *rawPass = encryptText(password);
+    unsigned char *rawPass = hashText(password);
     char *hashedPassword = hashToHexUtility(rawPass);
     free(rawPass);
 
