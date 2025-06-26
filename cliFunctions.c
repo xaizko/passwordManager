@@ -74,6 +74,19 @@ void initSetup() {
     //encrypts password
     char *hashedPassword = hashText(password); 
 
+    //create encryption key
+    char key[100];
+    printf("Type another password or phrase that will be used for encryption when securing entries (Max of 99 characters)");
+    if (!fgets(key, sizeof(key), stdin)) {
+	fprintf(stderr, "Failed to read key.\n");
+	exit(EXIT_FAILURE);
+    }
+    //remove trialing new line
+    password[strcspn(password, "\n")] = '\0';
+
+    //hashes it to 32 bits
+    char *hashedKey = hashText(key);
+
     //creates master file to store master password and user
     FILE *masterConfig;
     masterConfig = fopen(masterLoginPath, "w");
@@ -87,6 +100,7 @@ void initSetup() {
     //converts raw hash to hex for easy reversability
     hashToHex(masterConfig, hashedUsername);
     hashToHex(masterConfig, hashedPassword);
+    hashToHex(masterConfig, key);
 
     //formatting path for fopen
     char storagePath[512];

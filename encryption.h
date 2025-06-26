@@ -6,6 +6,7 @@
 
 //Encryption functions
 unsigned char *hashText(char *textToEncrypt);
+char *encryptText(char *textToEncrypt);
 
 //Utility functions
 int verifyCredentials(char *username, char* password);
