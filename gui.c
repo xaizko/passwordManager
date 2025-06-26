@@ -185,7 +185,6 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
     } else {
         g_print("Login failed!\n");
     }
-
 }
 
 //setup for adding passwords
@@ -286,6 +285,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
     gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
 
+    addSuccessfulNotification(form->login.widgets);
 
     free(storagePath);
     free(storedString);
@@ -302,4 +302,18 @@ char *getMasterStoragePath() {
 	snprintf(storagePath, len, "%s/.config/passwordManager/storage.db", home);
     }
     return storagePath;
+}
+
+// shows successful label for 3 seconds upon adding entry to storage
+void addSuccessfulNotification(AppWidgets *widgets) {
+    GtkWidget *grid = widgets->add_page;
+    GtkWidget *successLabel = gtk_label_new("Successfully added record to storage");
+    gtk_grid_attach(GTK_GRID(grid), successLabel, 1, 6, 1, 1);
+
+    g_timeout_add_seconds(3, (GSourceFunc)remove_success_label, successLabel);
+}
+
+//function to safely remove success label
+void remove_success_label(gpointer data) {
+    gtk_widget_unparent(GTK_WIDGET(data));
 }

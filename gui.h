@@ -59,6 +59,7 @@ void validateLogin(GtkWidget *button, gpointer user_data);
 //Password storing functionality
 void addToFile(GtkWidget *button, gpointer *userData);
 char *getMasterStoragePath();
-
+void addSuccessfulNotification(AppWidgets *widgets);
+void remove_success_label(gpointer data);
 
 #endif // GUI_H
