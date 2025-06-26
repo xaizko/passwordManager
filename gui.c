@@ -286,6 +286,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
     gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
 
+
     free(storagePath);
     free(storedString);
     fclose(storageFile);
