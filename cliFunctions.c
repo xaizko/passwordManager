@@ -100,7 +100,22 @@ void initSetup() {
     //converts raw hash to hex for easy reversability
     hashToHex(masterConfig, hashedUsername);
     hashToHex(masterConfig, hashedPassword);
-    hashToHex(masterConfig, key);
+
+    //formatting path to keyFile
+    char keyPath[512];
+    snprintf(keyPath, sizeof(keyPath), "%s/%s/key.txt", home, CONFIG_PATH);
+
+    //creating key file
+    FILE *keyFile;
+    keyFile = fopen(keyPath, "w");
+    if (keyFile == NULL) {
+	perror("Error creating key file");
+	exit(EXIT_FAILURE);
+    }
+
+    //writes key to file
+    char *hexKey = hashToHexUtility(hashedKey);
+    fprintf(keyFile, "%s\n", hexKey);
 
     //formatting path for fopen
     char storagePath[512];
