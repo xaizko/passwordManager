@@ -10,6 +10,9 @@ typedef struct {
 
 char *encryptText(char *textToEncrypt) {
     
+}
+
+char *decryptText(char *textToDecrypt) {
 
 }
 
