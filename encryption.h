@@ -20,5 +20,6 @@ char *decryptText(char *textToDecrypt);
 int verifyCredentials(char *username, char* password);
 void hashToHex(FILE *ftpr, unsigned char hashed[]);
 char *hashToHexUtility(unsigned char *hash);
+char *base64_encode(char *buffer, size_t length);
 
 #endif // ENCRYPTION_H
