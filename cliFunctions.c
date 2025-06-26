@@ -76,7 +76,7 @@ void initSetup() {
 
     //create encryption key
     char key[100];
-    printf("Type another password or phrase that will be used for encryption when securing entries (Max of 99 characters)");
+    printf("Type another password or phrase that will be used for encryption when securing entries (Max of 99 characters): ");
     if (!fgets(key, sizeof(key), stdin)) {
 	fprintf(stderr, "Failed to read key.\n");
 	exit(EXIT_FAILURE);
