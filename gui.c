@@ -278,12 +278,16 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     //encrypting before storing
     char *rawHash = encryptText(storedString);
     char *hexHash = hashToHexUtility(rawHash);
+    free(rawHash);
     strcat(hexHash, "\n");
     fprintf(storageFile, hexHash); 
 
+    gtk_editable_set_text(GTK_EDITABLE(form->appInput), "");
+    gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
+    gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
+
     free(storagePath);
     free(storedString);
-    free(rawHash);
     fclose(storageFile);
 
     return;
