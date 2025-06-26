@@ -59,7 +59,7 @@ void initSetup() {
     username[strcspn(username, "\n")] = '\0';
 
     //encrypt username
-    char *hashedUsername = encryptText(username);
+    char *hashedUsername = hashText(username);
 
     //get master password
     char password[51];
@@ -72,7 +72,7 @@ void initSetup() {
     password[strcspn(password, "\n")] = '\0';
 
     //encrypts password
-    char *hashedPassword = encryptText(password); 
+    char *hashedPassword = hashText(password); 
 
     //creates master file to store master password and user
     FILE *masterConfig;
