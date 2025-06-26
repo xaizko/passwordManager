@@ -259,11 +259,10 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.passInput)));
     AppWidgets *widgets = form->login.widgets;
 
-    printf("-----Test 1-----\n");
-    printf("App: %s\nUser: %s\nPass: %s\n", application, username, password);
-
+    //gets master storage path
     char *storagePath = getMasterStoragePath();
 
+    //create file object
     FILE *storageFile = fopen(storagePath, "a");
 
     //allocate enough memory to store string
@@ -275,16 +274,16 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     strcat(storedString, username);
     strcat(storedString, "|");
     strcat(storedString, password);
-
+    
+    //encrypting before storing
     char *rawHash = encryptText(storedString);
     char *hexHash = hashToHexUtility(rawHash);
     strcat(hexHash, "\n");
-    free(rawHash);
-
     fprintf(storageFile, hexHash); 
 
     free(storagePath);
     free(storedString);
+    free(rawHash);
     fclose(storageFile);
 
     return;
