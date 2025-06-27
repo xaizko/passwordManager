@@ -33,10 +33,11 @@ char *encryptText(char *textToEncrypt, char *aesKey) {
     int len, ciphertext_len;
     int plaintext_len = strlen(textToEncrypt);
 
-    char IVKey[16];
+    unsigned char IVKey[16];
     RAND_bytes(IVKey, sizeof(IVKey));
     
-    char ciphertext[1024];
+    char ciphertext[1040];
+    char combined[1056];
 
     EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, aesKey, IVKey);
     EVP_EncryptUpdate(ctx, ciphertext, &len, (char *)textToEncrypt, plaintext_len);
