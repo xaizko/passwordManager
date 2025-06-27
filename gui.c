@@ -182,6 +182,28 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
     
     if (result == 1) {
         switch_page(widgets, "menu");
+
+	//Load key	
+	char keyPath[512]; c
+	snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
+    
+	FILE *keyFile = fopen(keyPath, "rb");
+	if (!keyFile) {
+	    fprintf(stderr, "failed to open key.enc\n");
+	    exit(1);
+	}
+
+	unsigned char salt[16], iv[16], encryptedAesKey[64];
+	size_t readSalt = fread(salt, 1, 16, keyFile);
+	size_t readIV = fread(iv, 1, 16, keyFile);
+	size_t encryptedKeyLen = fread(encryptedAesKey, 1, sizeof(encryptedAesKey), keyFile);
+	fclose(keyFile);
+
+	if (readSalt != 16 || readIV != 16 || encryptedKeyLen < 32) {
+	    fprintf(stderr, "Incorrect keyformat\n");
+	    exit(1);
+	}
+
     } else {
         g_print("Login failed!\n");
     }
