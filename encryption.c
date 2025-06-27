@@ -28,16 +28,17 @@ char *base64_encode(char *buffer, size_t length) {
     return b64text;
 }
 
-char *encryptText(char *textToEncrypt) {
+char *encryptText(char *textToEncrypt, char *aesKey) {
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     int len, ciphertext_len;
     int plaintext_len = strlen(textToEncrypt);
-    char *key = retrieveKey(); 
-    const unsigned char *IVKey = (unsigned char *)"3a8fb2c46711e9925da0447cdd3291af";
 
+    char IVKey[16];
+    RAND_bytes(IVKey, sizeof(IVKey));
+    
     char ciphertext[1024];
 
-    EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, IVKey);
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, aesKey, IVKey);
     EVP_EncryptUpdate(ctx, ciphertext, &len, (char *)textToEncrypt, plaintext_len);
     ciphertext_len = len;
 
@@ -45,9 +46,12 @@ char *encryptText(char *textToEncrypt) {
     ciphertext_len += len;
 
     EVP_CIPHER_CTX_free(ctx);
-    free(key);
 
-    return base64_encode(ciphertext, ciphertext_len);
+    //combine iv and cipher text
+    memcpy(combined, iv, 16);
+    memcpy(combined + 16, ciphertext, ciphertext_len);
+
+    return base64_encode((char *)combined, ciphertext_len + 16);
 }
 
 char *decryptText(char *textToDecrypt) {

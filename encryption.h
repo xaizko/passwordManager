@@ -11,11 +11,9 @@
 #define AES_KEYLEN 32 // 256 BITS
 #define AES_IVLEN 16 // 128 bits
 
-extern const unsigned char *IVKey;
-
 //Encryption functions
 unsigned char *hashText(char *textToEncrypt);
-char *encryptText(char *textToEncrypt);
+char *encryptText(char *textToEncrypt, char *aesKey);
 char *decryptText(char *textToDecrypt);
 
 //Utility functions
