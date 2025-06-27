@@ -100,8 +100,6 @@ void initSetup() {
 	exit(EXIT_FAILURE);
     }
 
-    //Creating encryption key
-
     //generating salt
     char salt[16];
     if(!RAND_bytes(salt, sizeof(salt))) {
