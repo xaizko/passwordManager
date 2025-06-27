@@ -100,30 +100,62 @@ void initSetup() {
 	exit(EXIT_FAILURE);
     }
 
-    //generating salt
-    char salt[16];
-    if(!RAND_bytes(salt, sizeof(salt))) {
+    // --- KEY SETUP STARTS HERE ---
+
+    //generate salt
+    unsigned char salt[16];
+    if (!RAND_bytes(salt, sizeof(salt))) {
 	fprintf(stderr, "Error generating salt\n");
 	exit(EXIT_FAILURE);
     }
 
-    //formatting path to salt
-    char saltPath[512];
-    snprintf(saltPath, sizeof(saltPath), "%s/%s/salt.bin", home, CONFIG_PATH);
-
-    //storing salt in binary mode
-    FILE *saltStorage;
-    saltStorage = fopen(saltPath, "wb");
-    if (keyStorage == NULL) {
-	prerror("Error storing salt");
+    //derive key from passwordManager
+    unsigned char derivedKey[32];
+    if (!PKCS5_PBKDF2_HMAC(password, strlen(password), salt, sizeof(salt), 100000, EVP_sha256(), sizeof(derivedKey), derivedKey)) {
+	fprintf(stderr, "PBKDF2 failed \n");
 	exit(EXIT_FAILURE);
     }
-    fwrite(salt, 1, sizeof(salt), saltStorage);
+
+    //key that will be using for encryption
+    unsigned char aesKey[32];
+    if (!RAND_bytes(aesKey, sizeof(aesKey))) {
+	fprintf(stderr, "Failed to generate entry encryption key\n");
+	exit(EXIT_FAILURE);
+    }
+
+    //generate random IV for encrypting entry key
+    unsigned char iv[16];
+    if (!RAND_bytes(iv, sizeof(iv))) {
+	fprintf(stderr, "Failed to generate IV\n");
+    }
+
+    //encrypt aesKey with derived key
+    unsigned char encryptedAesKey[48];
+    int len = 0, ciphertext_len = 0;
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv);
+    EVP_EncryptUpdate(ctx, encryptedEntryKey, &len, entryKey, sizeof(entryKey));
+    ciphertext_len = len;
+    EVP_EncryptFinal_ex(ctx, encryptedEntryKey + len, &len);
+    ciphertext_len += len;
+    EVP_CIPHER_CTX_free(ctx);
+
+    //Save salt, iv, and encrypted key 
+    char keyPath[512];
+    snprintf(keyPath, sizeof(keyPath), "%s/%s/key.enc", home, CONFIG_PATH);
+    FILE *keyFile = fopen(keyPath, "wb");
+    if (!keyFile) {
+	perror("Error creating key file");
+	exit(EXIT_FAILURE);
+    }
+    fwrite(salt, 1, sizeof(salt), keyFile);
+    fwrite(iv, 1, sizeof(iv), keyFile);
+    fwrite(encryptedEntryKey, 1, ciphertext_len, keyFile);
 
     //free memory
+    fclose(keyFile);
     fclose(masterConfig);
     fclose(masterStorage);
-    fclose(saltStorage);
     free(hashedUsername);
     free(hashedPassword);
 
