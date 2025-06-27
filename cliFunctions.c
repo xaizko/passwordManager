@@ -74,19 +74,6 @@ void initSetup() {
     //encrypts password
     char *hashedPassword = hashText(password); 
 
-    //create encryption key
-    char key[100];
-    printf("Type another password or phrase that will be used for encryption when securing entries (Max of 99 characters): ");
-    if (!fgets(key, sizeof(key), stdin)) {
-	fprintf(stderr, "Failed to read key.\n");
-	exit(EXIT_FAILURE);
-    }
-    //remove trialing new line
-    password[strcspn(password, "\n")] = '\0';
-
-    //hashes it to 32 bits
-    char *hashedKey = hashText(key);
-
     //creates master file to store master password and user
     FILE *masterConfig;
     masterConfig = fopen(masterLoginPath, "w");
@@ -101,22 +88,6 @@ void initSetup() {
     hashToHex(masterConfig, hashedUsername);
     hashToHex(masterConfig, hashedPassword);
 
-    //formatting path to keyFile
-    char keyPath[512];
-    snprintf(keyPath, sizeof(keyPath), "%s/%s/key.txt", home, CONFIG_PATH);
-
-    //creating key file
-    FILE *keyFile;
-    keyFile = fopen(keyPath, "w");
-    if (keyFile == NULL) {
-	perror("Error creating key file");
-	exit(EXIT_FAILURE);
-    }
-
-    //writes key to file
-    char *hexKey = hashToHexUtility(hashedKey);
-    fprintf(keyFile, "%s\n", hexKey);
-
     //formatting path for fopen
     char storagePath[512];
     snprintf(storagePath, sizeof(storagePath), "%s/%s/storage.db", home, CONFIG_PATH);
@@ -129,9 +100,32 @@ void initSetup() {
 	exit(EXIT_FAILURE);
     }
 
+    //Creating encryption key
+
+    //generating salt
+    char salt[16];
+    if(!RAND_bytes(salt, sizeof(salt))) {
+	fprintf(stderr, "Error generating salt\n");
+	exit(EXIT_FAILURE);
+    }
+
+    //formatting path to salt
+    char saltPath[512];
+    snprintf(saltPath, sizeof(saltPath), "%s/%s/salt.bin", home, CONFIG_PATH);
+
+    //storing salt in binary mode
+    FILE *saltStorage;
+    saltStorage = fopen(saltPath, "wb");
+    if (keyStorage == NULL) {
+	prerror("Error storing salt");
+	exit(EXIT_FAILURE);
+    }
+    fwrite(salt, 1, sizeof(salt), saltStorage);
+
     //free memory
     fclose(masterConfig);
     fclose(masterStorage);
+    fclose(saltStorage);
     free(hashedUsername);
     free(hashedPassword);
 

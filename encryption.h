@@ -6,6 +6,7 @@
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 #include <openssl/buffer.h>
+#include <openssl/rand.h>
 
 #define AES_KEYLEN 32 // 256 BITS
 #define AES_IVLEN 16 // 128 bits
