@@ -29,7 +29,6 @@ char *base64_encode(char *buffer, size_t length) {
 }
 
 char *encryptText(char *textToEncrypt) {
-    
 }
 
 char *decryptText(char *textToDecrypt) {
@@ -111,3 +110,35 @@ int verifyCredentials(char *username, char *password) {
     return (index == 2); 
 }
 
+char *retrieveKey() {
+    FILE *keyFile;
+    char keyPath[512]; 
+    snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.txt", getenv("HOME"));
+    
+    keyFile = fopen(keyPath, "r");
+    if (!keyFile) {
+	perrro("Failed to open key file");
+	return NULL;
+    }
+    
+    char temp[1024];
+    if (!fgets(temp, sizeof(temp), keyFile)) {
+	perror("Failed to read key");
+	fclose(keyFile);
+	return NULL;
+    }
+    fclose(keyFile);
+    
+    //remove trailing new line
+    size_t len = strlen(temp);
+    if (len > 0 && temp[len -1] == '\n' {
+	temp[len - 1] = '\0';
+    }
+
+    char *key = malloc(strlen(temp) + 1);
+    if (!key) return NULL;
+    strcpy(key, temp);
+    
+    return key; 
+
+} 
