@@ -4,12 +4,13 @@
 #include <stdio.h>
 #include <openssl/sha.h>
 #include <openssl/bio.h>
+#include <openssl/evp.h>
 #include <openssl/buffer.h>
 
 #define AES_KEYLEN 32 // 256 BITS
 #define AES_IVLEN 16 // 128 bits
 
-//const unsigned char *IV = (unsigned char *)"3a8fb2c46711e9925da0447cdd3291af";
+extern const unsigned char *IVKey;
 
 //Encryption functions
 unsigned char *hashText(char *textToEncrypt);

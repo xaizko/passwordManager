@@ -18,7 +18,7 @@ char *base64_encode(char *buffer, size_t length) {
     BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // ignores new lines
     BIO_write(b64, buffer, length);
     BIO_flush(b64);
-    BIO_get_mem_ptr(b64, &bufferPtr): 
+    BIO_get_mem_ptr(b64, &bufferPtr); 
 
     char *b64text = malloc(bufferPtr->length + 1);
     memcpy(b64text, bufferPtr->data, bufferPtr->length);
@@ -29,6 +29,25 @@ char *base64_encode(char *buffer, size_t length) {
 }
 
 char *encryptText(char *textToEncrypt) {
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len, ciphertext_len;
+    int plaintext_len = strlen(textToEncrypt);
+    char *key = retrieveKey(); 
+    const unsigned char *IVKey = (unsigned char *)"3a8fb2c46711e9925da0447cdd3291af";
+
+    char ciphertext[1024];
+
+    EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, IVKey);
+    EVP_EncryptUpdate(ctx, ciphertext, &len, (char *)textToEncrypt, plaintext_len);
+    ciphertext_len = len;
+
+    EVP_EncryptFinal_ex(ctx, ciphertext + len, &len);
+    ciphertext_len += len;
+
+    EVP_CIPHER_CTX_free(ctx);
+    free(key);
+
+    return base64_encode(ciphertext, ciphertext_len);
 }
 
 char *decryptText(char *textToDecrypt) {
@@ -117,7 +136,7 @@ char *retrieveKey() {
     
     keyFile = fopen(keyPath, "r");
     if (!keyFile) {
-	perrro("Failed to open key file");
+	perror("Failed to open key file");
 	return NULL;
     }
     
@@ -131,7 +150,7 @@ char *retrieveKey() {
     
     //remove trailing new line
     size_t len = strlen(temp);
-    if (len > 0 && temp[len -1] == '\n' {
+    if (len > 0 && temp[len -1] == '\n') {
 	temp[len - 1] = '\0';
     }
 
