@@ -184,7 +184,7 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
         switch_page(widgets, "menu");
 
 	//Load key	
-	char keyPath[512]; c
+	char keyPath[512]; 
 	snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
     
 	FILE *keyFile = fopen(keyPath, "rb");
@@ -297,7 +297,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     strcat(storedString, password);
     
     //encrypting before storing
-    char *encryptedText = encryptText(storedString);
+    char *encryptedText = encryptText(storedString, encryptedAesKey);
     fprintf(storageFile, "%s\n", encryptedText);
     free(encryptedText);
     
