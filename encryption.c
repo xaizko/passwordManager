@@ -134,35 +134,44 @@ int verifyCredentials(char *username, char *password) {
     return (index == 2); 
 }
 
-char *retrieveKey() {
-    FILE *keyFile;
-    char keyPath[512]; 
-    snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.txt", getenv("HOME"));
-    
-    keyFile = fopen(keyPath, "r");
+unsigned char *retrieveDecryptedAESKey(char *password) {
+    char keyPath[512];
+    snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
+
+    FILE *keyFile = fopen(keyPath, "rb");
     if (!keyFile) {
 	perror("Failed to open key file");
 	return NULL;
     }
-    
-    char temp[1024];
-    if (!fgets(temp, sizeof(temp), keyFile)) {
-	perror("Failed to read key");
-	fclose(keyFile);
+
+    unsigned char salt[16], iv[16], encryptedAesKey[64];
+    size_t readSalt = fread(salt, 1, 16, keyFile);
+    size_t readIV = fread(iv, 1, 16, keyFile);
+    size_t encryptedKeyLen = fread(encryptedAesKey, 1, sizeof(encryptedAesKey), keyFile);
+    fclose(keyFile);
+
+    if (readSalt != 16 || readIV != 16 || encryptedKeyLen < 32) {
+	fprintf(stderr, "corrupted key.enc file\n");
 	return NULL;
     }
-    fclose(keyFile);
-    
-    //remove trailing new line
-    size_t len = strlen(temp);
-    if (len > 0 && temp[len -1] == '\n') {
-	temp[len - 1] = '\0';
+
+    unsigned char derivedKey[32];
+    if (!PKCS5_PBKDF2_HMAC(password, strlen(password), salt, sizeof(salt), 100000, EVP_sha256(), sizeof(derivedKey), derivedKey)) {
+	fprintf(stderr, "Key derivation failed\n");
+	return NULL;
     }
 
-    char *key = malloc(strlen(temp) + 1);
-    if (!key) return NULL;
-    strcpy(key, temp);
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     
-    return key; 
+    unsigned char *aesKey = malloc(32);
+    int len, plaintext_len = 0;
 
-} 
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv);
+    EVP_DecryptUpdate(ctx, aesKey, &len, encryptedAesKey, encryptedKeyLen));
+
+    plaintext_len += len;
+    EVP_CIPHER_CTX_free(ctx);
+
+    return aesKey;
+   
+}
