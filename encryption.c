@@ -55,8 +55,36 @@ char *encryptText(char *textToEncrypt, char *aesKey) {
     return base64_encode((char *)combined, ciphertext_len + 16);
 }
 
-char *decryptText(char *textToDecrypt) {
+char *decryptText(char *textToDecrypt, unsigned char *aesKey) {
+    int combined_len;
+    unsigned char *combined = base64_decode(textToDecrypt, &combined_len);
+    if (!combined || combined_len < 17) {
+	fprintf(stderrm "Invalid or corrupted ciphertext\n");
+	return NULL;
+    }
 
+    unsigned char *iv = combined;
+    unsigned char *ciphertext = combined + 16;
+    int ciphertext_len = combined_len - 16;
+
+    unsigned char *plaintext = malloc(ciphertext_len + 1);
+    
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+
+    int len, plaintext_len = 0;
+
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, aesKey, iv));
+    EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len));
+
+    plaintext_len = len;
+
+    EVP_DecryptFinal_ex(ctx, plaintext + len, &len);
+    plaintext_len += len;
+
+    plaintext[plaintext_len] = '\0';
+    EVP_CIPHER_CTX_free(ctx);
+    free(combined);
+    return (char *)plaintext;
 }
 
 //hashes text
