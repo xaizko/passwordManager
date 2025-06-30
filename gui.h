@@ -27,6 +27,7 @@ typedef struct {
     GtkWidget *appInput;
     GtkWidget *addUserInput;
     GtkWidget *addPassInput;
+    GtkWidget *accPassInput;
 } AppWidgets;
 
 typedef struct {
@@ -37,6 +38,7 @@ typedef struct {
 
 typedef struct {
     GtkWidget *appInput;
+    GtkWidget *accPassInput;
     LoginForm login;
 } AddForm;
 
