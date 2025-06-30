@@ -134,9 +134,9 @@ void initSetup() {
     int len = 0, ciphertext_len = 0;
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv);
-    EVP_EncryptUpdate(ctx, encryptedEntryKey, &len, entryKey, sizeof(entryKey));
+    EVP_EncryptUpdate(ctx, encryptedAesKey, &len, aesKey, sizeof(aesKey));
     ciphertext_len = len;
-    EVP_EncryptFinal_ex(ctx, encryptedEntryKey + len, &len);
+    EVP_EncryptFinal_ex(ctx, encryptedAesKey + len, &len);
     ciphertext_len += len;
     EVP_CIPHER_CTX_free(ctx);
 
@@ -150,7 +150,7 @@ void initSetup() {
     }
     fwrite(salt, 1, sizeof(salt), keyFile);
     fwrite(iv, 1, sizeof(iv), keyFile);
-    fwrite(encryptedEntryKey, 1, ciphertext_len, keyFile);
+    fwrite(encryptedAesKey, 1, ciphertext_len, keyFile);
 
     //free memory
     fclose(keyFile);
