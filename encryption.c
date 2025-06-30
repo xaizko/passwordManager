@@ -9,12 +9,14 @@ typedef struct {
 } LoginFormType;
 
 //converts binary data to base64 text
-char *base64_encode(char *buffer, size_t length) {
+char *base64_encode(const unsigned char *buffer, size_t length) {
     BIO *bio, *b64;
     BUF_MEM *bufferPtr;
+
     b64 = BIO_new(BIO_f_base64());
     bio = BIO_new(BIO_s_mem());
     b64 = BIO_push(b64, bio);
+
     BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // ignores new lines
     BIO_write(b64, buffer, length);
     BIO_flush(b64);
@@ -49,17 +51,17 @@ char *encryptText(char *textToEncrypt, char *aesKey) {
     EVP_CIPHER_CTX_free(ctx);
 
     //combine iv and cipher text
-    memcpy(combined, iv, 16);
+    memcpy(combined, IVKey, 16);
     memcpy(combined + 16, ciphertext, ciphertext_len);
 
     return base64_encode((char *)combined, ciphertext_len + 16);
 }
 
 char *decryptText(char *textToDecrypt, unsigned char *aesKey) {
-    int combined_len;
-    unsigned char *combined = base64_decode(textToDecrypt, &combined_len);
+    gsize combined_len;
+    unsigned char *combined = g_base64_decode(textToDecrypt, &combined_len);
     if (!combined || combined_len < 17) {
-	fprintf(stderrm "Invalid or corrupted ciphertext\n");
+	fprintf(stderr, "Invalid or corrupted ciphertext\n");
 	return NULL;
     }
 
@@ -68,22 +70,21 @@ char *decryptText(char *textToDecrypt, unsigned char *aesKey) {
     int ciphertext_len = combined_len - 16;
 
     unsigned char *plaintext = malloc(ciphertext_len + 1);
-    
+    int len, plaintext_len;
+
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-
-    int len, plaintext_len = 0;
-
-    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, aesKey, iv));
-    EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len));
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, aesKey, iv);
+    EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len);
 
     plaintext_len = len;
 
     EVP_DecryptFinal_ex(ctx, plaintext + len, &len);
-    plaintext_len += len;
 
+    plaintext_len += len;
     plaintext[plaintext_len] = '\0';
+
     EVP_CIPHER_CTX_free(ctx);
-    free(combined);
+    g_free(combined);
     return (char *)plaintext;
 }
 
@@ -195,7 +196,7 @@ unsigned char *retrieveDecryptedAESKey(const char *password) {
     int len, plaintext_len = 0;
 
     EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv);
-    EVP_DecryptUpdate(ctx, aesKey, &len, encryptedAesKey, encryptedKeyLen));
+    EVP_DecryptUpdate(ctx, aesKey, &len, encryptedAesKey, encryptedKeyLen);
 
     plaintext_len += len;
     EVP_CIPHER_CTX_free(ctx);
