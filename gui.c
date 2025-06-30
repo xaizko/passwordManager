@@ -32,6 +32,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->appInput = gtk_entry_new(); 
     widgets->addUserInput = gtk_entry_new();
     widgets->addPassInput = gtk_entry_new();
+    widgets->accPassInput = gtk_entry_new();
 
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
@@ -182,28 +183,6 @@ void validateLogin(GtkWidget *button, gpointer user_data) {
     
     if (result == 1) {
         switch_page(widgets, "menu");
-
-	//Load key	
-	char keyPath[512]; 
-	snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
-    
-	FILE *keyFile = fopen(keyPath, "rb");
-	if (!keyFile) {
-	    fprintf(stderr, "failed to open key.enc\n");
-	    exit(1);
-	}
-
-	unsigned char salt[16], iv[16], encryptedAesKey[64];
-	size_t readSalt = fread(salt, 1, 16, keyFile);
-	size_t readIV = fread(iv, 1, 16, keyFile);
-	size_t encryptedKeyLen = fread(encryptedAesKey, 1, sizeof(encryptedAesKey), keyFile);
-	fclose(keyFile);
-
-	if (readSalt != 16 || readIV != 16 || encryptedKeyLen < 32) {
-	    fprintf(stderr, "Incorrect keyformat\n");
-	    exit(1);
-	}
-
     } else {
         g_print("Login failed!\n");
     }
@@ -230,18 +209,23 @@ void setup_add_page(AppWidgets *widgets) {
     GtkWidget *passLabel = gtk_label_new("Password");
     gtk_grid_attach(GTK_GRID(grid), passLabel, 1, 3, 1, 1);
 
+    //Acc password label
+    GtkWidget *accPassLabel = gtk_label_new("Account Password (Needed for encryption)");
+    gtk_grid_attach(GTK_GRID(grid), accPassLabel, 1, 4, 1, 1);
+
     //set up entries
-    GtkWidget *userInput, *passInput, *appInput;
+    GtkWidget *userInput, *passInput, *appInput, *accPassInput;
     appInput = widgets->appInput;
     userInput = widgets->addUserInput;
     passInput = widgets->addPassInput;
+    accPassInput = widgets->accPassInput;
 
     //app entry
     gtk_entry_set_placeholder_text(GTK_ENTRY(appInput), "Application");
     gtk_grid_attach_next_to(GTK_GRID(grid), appInput, appLabel, GTK_POS_RIGHT, 1, 1);
 
     //user entry
-    gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Username");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(userInput), "Username"); 
     gtk_grid_attach_next_to(GTK_GRID(grid), userInput, userLabel, GTK_POS_RIGHT, 1, 1);
 
     //password entry
@@ -251,6 +235,13 @@ void setup_add_page(AppWidgets *widgets) {
     //gtk_entry_set_invisible_char(GTK_ENTRY(passInput), '*');
     gtk_grid_attach_next_to(GTK_GRID(grid), passInput, passLabel, GTK_POS_RIGHT, 1, 1);
 
+    //account password 
+    gtk_entry_set_placeholder_text(GTK_ENTRY(accPassInput), "Account Password (Needed for encryption)");
+    gtk_entry_set_visibility(GTK_ENTRY(accPassInput), FALSE);
+    gtk_entry_set_input_purpose(GTK_ENTRY(accPassInput), GTK_INPUT_PURPOSE_PASSWORD);
+    gtk_entry_set_invisible_char(GTK_ENTRY(accPassInput), '*');
+    gtk_grid_attach_next_to(GTK_GRID(grid), accPassInput, accPassLabel, GTK_POS_RIGHT, 1, 1);
+
     //populate form data to pass
     AddForm *form = g_new(AddForm, 1);
 
@@ -258,6 +249,7 @@ void setup_add_page(AppWidgets *widgets) {
     form->login.userInput = userInput;
     form->login.passInput = passInput;
     form->login.widgets = widgets; 
+    form->accPassInput = accPassInput;
 
     //submit button
     GtkWidget *submitButton = gtk_button_new_with_label("Add To Vault");
@@ -278,6 +270,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     const char *application = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->appInput)));
     const char *username = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.userInput)));
     const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.passInput)));
+    const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->accPassInput)));
     AppWidgets *widgets = form->login.widgets;
 
     //gets master storage path
@@ -296,6 +289,8 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     strcat(storedString, "|");
     strcat(storedString, password);
     
+    unsigned char *encryptedAesKey = retrieveDecryptedAESKey(accPass); 
+
     //encrypting before storing
     char *encryptedText = encryptText(storedString, encryptedAesKey);
     fprintf(storageFile, "%s\n", encryptedText);
@@ -307,6 +302,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 
     addSuccessfulNotification(form->login.widgets);
 
+    free(encryptedAesKey);
     free(storagePath);
     free(storedString);
     fclose(storageFile);
