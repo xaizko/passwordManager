@@ -21,6 +21,6 @@ int verifyCredentials(char *username, char* password);
 void hashToHex(FILE *ftpr, unsigned char hashed[]);
 char *hashToHexUtility(unsigned char *hash);
 char *base64_encode(char *buffer, size_t length);
-unsigned char *retrieveDecryptedAESKey(char *password);
+unsigned char *retrieveDecryptedAESKey(const char *password);
 
 #endif // ENCRYPTION_H

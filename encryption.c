@@ -162,7 +162,7 @@ int verifyCredentials(char *username, char *password) {
     return (index == 2); 
 }
 
-unsigned char *retrieveDecryptedAESKey(char *password) {
+unsigned char *retrieveDecryptedAESKey(const char *password) {
     char keyPath[512];
     snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
 
