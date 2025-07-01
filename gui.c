@@ -253,13 +253,13 @@ void setup_add_page(AppWidgets *widgets) {
 
     //submit button
     GtkWidget *submitButton = gtk_button_new_with_label("Add To Vault");
-    gtk_grid_attach(GTK_GRID(grid), submitButton, 1, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), submitButton, 1, 5, 1, 1);
     g_signal_connect(submitButton, "clicked", G_CALLBACK(addToFile), form);
 
     //main menu button
     GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
     g_object_set_data(G_OBJECT(menuButton), "page", "menu");
-    gtk_grid_attach(GTK_GRID(grid), menuButton, 1, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), menuButton, 1, 6, 1, 1);
     g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
