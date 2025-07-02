@@ -19,6 +19,7 @@ char *decryptText(char *textToDecrypt, unsigned char *aesKey);
 
 //Utility functions
 int verifyCredentials(char *username, char* password);
+int verifyPassword(char *password);
 void hashToHex(FILE *ftpr, unsigned char hashed[]);
 char *hashToHexUtility(unsigned char *hash);
 char *base64_encode(const unsigned char *buffer, size_t length);
