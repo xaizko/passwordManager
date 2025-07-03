@@ -163,6 +163,32 @@ int verifyCredentials(char *username, char *password) {
     return (index == 2); 
 }
 
+//check only password
+int verifyPassword(char *password) {
+    unsigned char *hashPassword = hashText(password);
+    char *hexPassword = hashToHexUtility(hashPassword);
+    free(hashPassword);
+
+    char fullpath[256];
+    snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", getenv("HOME"));
+    FILE *masterConf = fopen(fullpath, "r");
+
+    char line[SHA256_DIGEST_LENGTH * 2 + 2];
+    int lineNum = 1;
+    while (fgets(line, sizeof(line), masterConf)) {
+	line[strcspn(line, "\n")] = 0;
+
+	if (lineNum == 2) {
+	    if (!strcmp(hexPassword, line)) {
+		return 1;
+	    }
+	}
+
+	lineNum++;
+    }
+    return 0;
+}
+
 unsigned char *retrieveDecryptedAESKey(const char *password) {
     char keyPath[512];
     snprintf(keyPath, sizeof(keyPath), "%s/.config/passwordManager/key.enc", getenv("HOME"));
