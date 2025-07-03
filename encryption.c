@@ -164,7 +164,7 @@ int verifyCredentials(char *username, char *password) {
 }
 
 //check only password
-int verifyPassword(char *password) {
+int verifyPassword(const char *password) {
     unsigned char *hashPassword = hashText(password);
     char *hexPassword = hashToHexUtility(hashPassword);
     free(hashPassword);
