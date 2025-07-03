@@ -328,7 +328,7 @@ char *getMasterStoragePath() {
 void addSuccessfulNotification(AppWidgets *widgets) {
     GtkWidget *grid = widgets->add_page;
     GtkWidget *successLabel = gtk_label_new("Successfully added record to storage");
-    gtk_grid_attach(GTK_GRID(grid), successLabel, 1, 6, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), successLabel, 1, 7, 1, 1);
 
     g_timeout_add_seconds(3, (GSourceFunc)remove_success_label, successLabel);
 }
