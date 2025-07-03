@@ -272,40 +272,44 @@ void addToFile(GtkWidget *button, gpointer *userData) {
     const char *password = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->login.passInput)));
     const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(form->accPassInput)));
     AppWidgets *widgets = form->login.widgets;
-
-    //gets master storage path
-    char *storagePath = getMasterStoragePath();
-
-    //create file object
-    FILE *storageFile = fopen(storagePath, "a");
-
-    //allocate enough memory to store string
-    char *storedString = malloc(strlen(application) + strlen(username) + strlen(password) + 1);
-
-    //copy and concatenate to add everything
-    strcpy(storedString, application);
-    strcat(storedString, "|");
-    strcat(storedString, username);
-    strcat(storedString, "|");
-    strcat(storedString, password);
     
-    unsigned char *encryptedAesKey = retrieveDecryptedAESKey(accPass); 
+    if (verifyPassword(accPass)) {
+	//gets master storage path
+	char *storagePath = getMasterStoragePath();
 
-    //encrypting before storing
-    char *encryptedText = encryptText(storedString, encryptedAesKey);
-    fprintf(storageFile, "%s\n", encryptedText);
-    free(encryptedText);
-    
-    gtk_editable_set_text(GTK_EDITABLE(form->appInput), "");
-    gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
-    gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
+	//create file object
+	FILE *storageFile = fopen(storagePath, "a");
 
-    addSuccessfulNotification(form->login.widgets);
+	//allocate enough memory to store string
+	char *storedString = malloc(strlen(application) + strlen(username) + strlen(password) + 1);
 
-    free(encryptedAesKey);
-    free(storagePath);
-    free(storedString);
-    fclose(storageFile);
+	//copy and concatenate to add everything
+	strcpy(storedString, application);
+	strcat(storedString, "|");
+	strcat(storedString, username);
+	strcat(storedString, "|");
+	strcat(storedString, password);
+
+	unsigned char *encryptedAesKey = retrieveDecryptedAESKey(accPass); 
+
+	//encrypting before storing
+	char *encryptedText = encryptText(storedString, encryptedAesKey);
+	fprintf(storageFile, "%s\n", encryptedText);
+	free(encryptedText);
+
+	gtk_editable_set_text(GTK_EDITABLE(form->appInput), "");
+	gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
+	gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
+
+	addSuccessfulNotification(form->login.widgets);
+	free(encryptedAesKey);
+	free(storagePath);
+	free(storedString);
+	fclose(storageFile);
+    } else {
+	printf("Failed to add wrong password\n");
+    }
+
 
     return;
 }
