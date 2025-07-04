@@ -49,7 +49,7 @@ void activate(GtkApplication *app, gpointer user_data) {
     setup_login_page(widgets);
     setup_add_page(widgets);
     //setup_delete_page(widgets);
-    //setup_list_page(widgets);
+    setup_list_page(widgets);
     //setup_generate_page(widgets);
     
     //Choose initial page
@@ -337,3 +337,62 @@ void addSuccessfulNotification(AppWidgets *widgets) {
 void remove_success_label(gpointer data) {
     gtk_widget_unparent(GTK_WIDGET(data));
 }
+
+void setup_list_page(AppWidgets *widgets) {
+    GtkWidget *scroll = gtk_scrolled_window_new();
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+                                   GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_vexpand(scroll, TRUE);
+    gtk_widget_set_hexpand(scroll, TRUE);
+
+    GtkWidget *list_container = widgets->list_page;
+    gtk_widget_set_margin_top(list_container, 10);
+    gtk_widget_set_margin_bottom(list_container, 10);
+    gtk_widget_set_margin_start(list_container, 10);
+    gtk_widget_set_margin_end(list_container, 10);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), list_container);
+
+    struct {
+        const char *app;
+        const char *username;
+        const char *password;
+    } entries[] = {
+        { "Discord", "xaizko", "hunter2" },
+        { "GitHub", "random", "pass2" },
+        { "Reddit", "phantom", "Reddit" },
+        { "Bank", "Bank", "money" },
+    };
+
+    for (int i = 0; i < sizeof(entries) / sizeof(entries[0]); i++) {
+        GtkWidget *entry_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
+        gtk_widget_set_margin_top(entry_box, 5);
+        gtk_widget_set_margin_bottom(entry_box, 5);
+
+        GtkWidget *info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+
+        char app_line[128], user_line[128], pass_line[128];
+        snprintf(app_line, sizeof(app_line), "App: %s", entries[i].app);
+        snprintf(user_line, sizeof(user_line), "Username: %s", entries[i].username);
+        snprintf(pass_line, sizeof(pass_line), "Password: %s", entries[i].password);
+
+        GtkWidget *app_label = gtk_label_new(app_line);
+        GtkWidget *user_label = gtk_label_new(user_line);
+        GtkWidget *pass_label = gtk_label_new(pass_line);
+
+        gtk_label_set_xalign(GTK_LABEL(app_label), 0.0);
+        gtk_label_set_xalign(GTK_LABEL(user_label), 0.0);
+        gtk_label_set_xalign(GTK_LABEL(pass_label), 0.0);
+
+        gtk_box_append(GTK_BOX(info_box), app_label);
+        gtk_box_append(GTK_BOX(info_box), user_label);
+        gtk_box_append(GTK_BOX(info_box), pass_label);
+
+        GtkWidget *delete_button = gtk_button_new_with_label("Delete");
+
+        gtk_box_append(GTK_BOX(entry_box), info_box);
+        gtk_box_append(GTK_BOX(entry_box), delete_button);
+        gtk_box_append(GTK_BOX(list_container), entry_box);
+    }
+
+}
+

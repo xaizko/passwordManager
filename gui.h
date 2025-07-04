@@ -50,6 +50,7 @@ void setup_warning_page(AppWidgets *widgets);
 void setup_menu_page(AppWidgets *widgets);
 void setup_login_page(AppWidgets *widgets);
 void setup_add_page(AppWidgets *widgets);
+void setup_list_page(AppWidgets *widgets);
 
 //Core functionality functions
 void switch_page(AppWidgets *widgets, const char *page_name);
