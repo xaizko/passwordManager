@@ -13,7 +13,7 @@
 #define AES_IVLEN 16 // 128 bits
 
 //Encryption functions
-unsigned char *hashText(char *textToEncrypt);
+unsigned char *hashText(const char *textToEncrypt);
 char *encryptText(char *textToEncrypt, char *aesKey);
 char *decryptText(char *textToDecrypt, unsigned char *aesKey);
 

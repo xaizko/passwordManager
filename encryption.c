@@ -89,7 +89,7 @@ char *decryptText(char *textToDecrypt, unsigned char *aesKey) {
 }
 
 //hashes text
-unsigned char *hashText(char *textToEncrypt) {
+unsigned char *hashText(const char *textToEncrypt) {
     unsigned char *hash = malloc(SHA256_DIGEST_LENGTH);
     if (!hash) {
 	fprintf(stderr, "Memory allocation failed.\n");
