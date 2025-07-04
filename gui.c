@@ -301,13 +301,13 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 	gtk_editable_set_text(GTK_EDITABLE(form->login.userInput), "");
 	gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
 
-	addSuccessfulNotification(form->login.widgets);
+	addSuccessfulNotification(form->login.widgets, 1);
 	free(encryptedAesKey);
 	free(storagePath);
 	free(storedString);
 	fclose(storageFile);
     } else {
-	printf("Failed to add wrong password\n");
+	addSuccessfulNotification(form->login.widgets, 0);
     }
 
 
@@ -327,10 +327,12 @@ char *getMasterStoragePath() {
 // shows successful label for 3 seconds upon adding entry to storage
 void addSuccessfulNotification(AppWidgets *widgets, int success) {
     GtkWidget *grid = widgets->add_page;
+    GtkWidget *notificationLabel;
+
     if (success) {
-	GtkWidget *notificationLabel= gtk_label_new("Successfully added record to storage");
+	notificationLabel= gtk_label_new("Successfully added record to storage");
     } else {
-	GtkWidget *notificationLabel = gtk_label_new("Failed to add record, incorrect password");
+	notificationLabel = gtk_label_new("Failed to add record, incorrect password");
     }
     gtk_grid_attach(GTK_GRID(grid), notificationLabel, 1, 7, 1, 1);
 
