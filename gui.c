@@ -325,16 +325,20 @@ char *getMasterStoragePath() {
 }
 
 // shows successful label for 3 seconds upon adding entry to storage
-void addSuccessfulNotification(AppWidgets *widgets) {
+void addSuccessfulNotification(AppWidgets *widgets, int success) {
     GtkWidget *grid = widgets->add_page;
-    GtkWidget *successLabel = gtk_label_new("Successfully added record to storage");
-    gtk_grid_attach(GTK_GRID(grid), successLabel, 1, 7, 1, 1);
+    if (success) {
+	GtkWidget *notificationLabel= gtk_label_new("Successfully added record to storage");
+    } else {
+	GtkWidget *notificationLabel = gtk_label_new("Failed to add record, incorrect password");
+    }
+    gtk_grid_attach(GTK_GRID(grid), notificationLabel, 1, 7, 1, 1);
 
-    g_timeout_add_seconds(3, (GSourceFunc)remove_success_label, successLabel);
+    g_timeout_add_seconds(3, (GSourceFunc)remove_notification_label, notificationLabel);
 }
 
 //function to safely remove success label
-void remove_success_label(gpointer data) {
+void remove_notification_label(gpointer data) {
     gtk_widget_unparent(GTK_WIDGET(data));
 }
 
