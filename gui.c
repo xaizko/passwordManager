@@ -351,8 +351,13 @@ void setup_list_page(AppWidgets *widgets) {
     GtkWidget *box = widgets->list_page;
     GtkWidget *passEntry = widgets->listPassInput;
 
-    GtkWidget *passLabel = gtk_label_new("Enter Password");
+    GtkWidget *passLabel = gtk_label_new("Enter Password to View");
     gtk_box_append(GTK_BOX(box), passLabel);
+    gtk_box_append(GTK_BOX(box), passEntry);
 
+    gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
+    gtk_entry_set_visibility(GTK_ENTRY(passEntry), FALSE);
+    gtk_entry_set_input_purpose(GTK_ENTRY(passEntry), GTK_INPUT_PURPOSE_PASSWORD);
+    gtk_entry_set_invisible_char(GTK_ENTRY(passEntry), '*');
 }
 
