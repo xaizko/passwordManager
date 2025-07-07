@@ -28,6 +28,9 @@ typedef struct {
     GtkWidget *addUserInput;
     GtkWidget *addPassInput;
     GtkWidget *accPassInput;
+
+    //Widgets for list_page
+    GtkWidget *listPassInput;
 } AppWidgets;
 
 typedef struct {

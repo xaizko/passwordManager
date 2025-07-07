@@ -34,6 +34,9 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->addPassInput = gtk_entry_new();
     widgets->accPassInput = gtk_entry_new();
 
+    //List page entries
+    widgets->listPassInput = gtk_entry_new();
+
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->menu_page, "menu");
@@ -334,8 +337,8 @@ void addSuccessfulNotification(AppWidgets *widgets, int success) {
     } else {
 	notificationLabel = gtk_label_new("Failed to add record, incorrect password");
     }
-    gtk_grid_attach(GTK_GRID(grid), notificationLabel, 1, 7, 1, 1);
 
+    gtk_grid_attach(GTK_GRID(grid), notificationLabel, 1, 7, 1, 1);
     g_timeout_add_seconds(3, (GSourceFunc)remove_notification_label, notificationLabel);
 }
 
@@ -346,5 +349,10 @@ void remove_notification_label(gpointer data) {
 
 void setup_list_page(AppWidgets *widgets) {
     GtkWidget *box = widgets->list_page;
+    GtkWidget *passEntry = widgets->listPassInput;
+
+    GtkWidget *passLabel = gtk_label_new("Enter Password");
+    gtk_box_append(GTK_BOX(box), passLabel);
+
 }
 
