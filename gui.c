@@ -349,15 +349,38 @@ void remove_notification_label(gpointer data) {
 
 void setup_list_page(AppWidgets *widgets) {
     GtkWidget *box = widgets->list_page;
-    GtkWidget *passEntry = widgets->listPassInput;
+    GtkWidget *passEntry = widgets->listPassInput; // loads password entry
 
+    //creating password label
     GtkWidget *passLabel = gtk_label_new("Enter Password to View");
     gtk_box_append(GTK_BOX(box), passLabel);
     gtk_box_append(GTK_BOX(box), passEntry);
 
+    //important settings 
     gtk_entry_set_placeholder_text(GTK_ENTRY(passEntry), "Password");
     gtk_entry_set_visibility(GTK_ENTRY(passEntry), FALSE);
     gtk_entry_set_input_purpose(GTK_ENTRY(passEntry), GTK_INPUT_PURPOSE_PASSWORD);
     gtk_entry_set_invisible_char(GTK_ENTRY(passEntry), '*');
+
+    ListForm *entryData = g_new(ListForm, 1);
+    entryData->passInput = passEntry;
+
+    //create button
+    GtkWidget *submitButton = gtk_button_new_with_label("See Accounts");
+    gtk_box_append(GTK_BOX(box), submitButton);
+    g_signal_connect(submitButton, "clicked", G_CALLBACK(list_login), entryData);
+}
+
+void list_login(GtkWidget *button, gpointer passData) {
+    ListForm *data = (ListForm *)passData;
+    const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(data->passInput)));
+
+    if (verifyPassword(accPass)) {
+	printf("Correct password\n");
+    } else {
+	printf("Incorect password\n");
+    }
+    
+    return;
 }
 

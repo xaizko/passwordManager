@@ -7,6 +7,7 @@
 #include "cliFunctions.h"
 
 
+//info object to hold all widgets as part of stack
 typedef struct {
     GtkWidget *stack;
 
@@ -33,17 +34,23 @@ typedef struct {
     GtkWidget *listPassInput;
 } AppWidgets;
 
+//info object for logging in 
 typedef struct {
     GtkWidget *userInput;
     GtkWidget *passInput;
     AppWidgets *widgets;
 } LoginForm;
 
+//info object for adding accoutns
 typedef struct {
     GtkWidget *appInput;
     GtkWidget *accPassInput;
     LoginForm login;
 } AddForm;
+
+typedef struct {
+    GtkWidget *passInput;
+} ListForm;
 
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
@@ -67,5 +74,8 @@ void addToFile(GtkWidget *button, gpointer *userData);
 char *getMasterStoragePath();
 void addSuccessfulNotification(AppWidgets *widgets, int success);
 void remove_notification_label(gpointer data);
+
+//Listing accounts functionality
+void list_login(GtkWidget *button, gpointer passData);
 
 #endif // GUI_H
