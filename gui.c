@@ -387,8 +387,7 @@ void list_login(GtkWidget *button, gpointer passData) {
 	gtk_box_remove(GTK_BOX(box), passInput);
 
 	//Load entries properly
-	GtkWidget *testLabel = gtk_label_new("You logged in");
-	gtk_box_append(GTK_BOX(box), testLabel);
+
     } else {
 	GtkWidget *failLabel = gtk_label_new("Incorect password try again");
 	gtk_box_append(GTK_BOX(box), failLabel);
