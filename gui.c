@@ -381,13 +381,18 @@ void list_login(GtkWidget *button, gpointer passData) {
     const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(data->passInput)));
 
     if (verifyPassword(accPass)) {
+	//remove verification widgets
 	gtk_box_remove(GTK_BOX(box), passLabel);
 	gtk_box_remove(GTK_BOX(box), button);
 	gtk_box_remove(GTK_BOX(box), passInput);
+
+	//Load entries properly
 	GtkWidget *testLabel = gtk_label_new("You logged in");
 	gtk_box_append(GTK_BOX(box), testLabel);
     } else {
-	printf("Incorect password\n");
+	GtkWidget *failLabel = gtk_label_new("Incorect password try again");
+	gtk_box_append(GTK_BOX(box), failLabel);
+	g_timeout_add_seconds(3, (GSourceFunc)remove_notification_label, failLabel);
     }
     
     return;
