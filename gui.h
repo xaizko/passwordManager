@@ -49,7 +49,11 @@ typedef struct {
 } AddForm;
 
 typedef struct {
+    GtkWidget *box;
+
+    //Login screen children
     GtkWidget *passInput;
+    GtkWidget *passLabel;
 } ListForm;
 
 //entry function

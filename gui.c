@@ -364,6 +364,8 @@ void setup_list_page(AppWidgets *widgets) {
 
     ListForm *entryData = g_new(ListForm, 1);
     entryData->passInput = passEntry;
+    entryData->passLabel = passLabel;
+    entryData->box = box;
 
     //create button
     GtkWidget *submitButton = gtk_button_new_with_label("See Accounts");
@@ -373,10 +375,17 @@ void setup_list_page(AppWidgets *widgets) {
 
 void list_login(GtkWidget *button, gpointer passData) {
     ListForm *data = (ListForm *)passData;
+    GtkWidget *passInput = data->passInput;
+    GtkWidget *passLabel = data->passLabel;
+    GtkWidget *box = data->box;
     const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(data->passInput)));
 
     if (verifyPassword(accPass)) {
-	printf("Correct password\n");
+	gtk_box_remove(GTK_BOX(box), passLabel);
+	gtk_box_remove(GTK_BOX(box), button);
+	gtk_box_remove(GTK_BOX(box), passInput);
+	GtkWidget *testLabel = gtk_label_new("You logged in");
+	gtk_box_append(GTK_BOX(box), testLabel);
     } else {
 	printf("Incorect password\n");
     }
