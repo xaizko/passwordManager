@@ -371,6 +371,12 @@ void setup_list_page(AppWidgets *widgets) {
     GtkWidget *submitButton = gtk_button_new_with_label("See Accounts");
     gtk_box_append(GTK_BOX(box), submitButton);
     g_signal_connect(submitButton, "clicked", G_CALLBACK(list_login), entryData);
+
+    //return to menu
+    GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
+    g_object_set_data(G_OBJECT(menuButton), "page", "menu");
+    gtk_box_append(GTK_BOX(box), menuButton);
+    g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
 void list_login(GtkWidget *button, gpointer passData) {
