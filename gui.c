@@ -435,12 +435,47 @@ void list_login(GtkWidget *button, gpointer passData) {
 		// Skip empty lines
 		if (strlen(buffer) == 0) continue;
 
+		//decyphers line
 		char *decrypted = decryptText(buffer, aesKey);
+
+		//creating entry box
+		GtkWidget *entryBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+		char *token = strtok(decrypted, "|");
+		int count = 1;
+
 		if (decrypted) {
-		    GtkWidget *decryptedLabel = gtk_label_new(decrypted);
-		    gtk_box_append(GTK_BOX(box), decryptedLabel);
+		    while (token != NULL) {
+			GtkWidget *nextLabel = NULL;
+			switch (count) {
+			    case 1: { //app case
+				char *formatted = g_strdup_printf("Application: %s", token);
+				nextLabel = gtk_label_new(formatted);
+				g_free(formatted);
+				break;
+			    }
+			    case 2: { //username case
+				char *formatted = g_strdup_printf("Username: %s", token);
+				nextLabel = gtk_label_new(formatted);
+				g_free(formatted);
+				break;
+			    }
+			    case 3: { //password case
+				char *formatted = g_strdup_printf("Password: %s", token);
+				nextLabel = gtk_label_new(formatted);
+				g_free(formatted);
+				break;
+			    }
+			}
+			if (nextLabel) {
+			    gtk_box_append(GTK_BOX(entryBox), nextLabel);
+			}
+
+			token = strtok(NULL, "|");
+			count++;
+		    }
 		    free(decrypted);
 		}
+		gtk_box_append(GTK_BOX(box), entryBox);
 	    }
 	    fclose(storageFile);
 	}
