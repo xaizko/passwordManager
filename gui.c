@@ -439,7 +439,7 @@ void list_login(GtkWidget *button, gpointer passData) {
 		char *decrypted = decryptText(buffer, aesKey);
 
 		//creating entry box
-		GtkWidget *entryBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+		GtkWidget *entryBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 		char *token = strtok(decrypted, "|");
 		int count = 1;
 
