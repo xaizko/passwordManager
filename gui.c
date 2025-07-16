@@ -284,7 +284,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 	FILE *storageFile = fopen(storagePath, "a");
 
 	//allocate enough memory to store string
-	char *storedString = malloc(strlen(application) + strlen(username) + strlen(password) + 1);
+	char *storedString = malloc(strlen(application) + strlen(username) + strlen(password) + 3);
 
 	//copy and concatenate to add everything
 	strcpy(storedString, application);
@@ -293,10 +293,25 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 	strcat(storedString, "|");
 	strcat(storedString, password);
 
-	unsigned char *encryptedAesKey = retrieveDecryptedAESKey(accPass); 
+	unsigned char *aesKey = retrieveDecryptedAESKey(accPass);
+	if (!aesKey) {
+	    addSuccessfulNotification(form->login.widgets, 0);
+	    free(storagePath);
+	    free(storedString);
+	    fclose(storageFile);
+	    return;
+	}
 
 	//encrypting before storing
-	char *encryptedText = encryptText(storedString, encryptedAesKey);
+	char *encryptedText = encryptText(storedString, (char *)aesKey);
+	if (!encryptedText) {
+	    addSuccessfulNotification(form->login.widgets, 0);
+	    free(aesKey);
+	    free(storagePath);
+	    free(storedString);
+	    fclose(storageFile);
+	    return;
+	}
 	fprintf(storageFile, "%s\n", encryptedText);
 	free(encryptedText);
 
@@ -305,7 +320,7 @@ void addToFile(GtkWidget *button, gpointer *userData) {
 	gtk_editable_set_text(GTK_EDITABLE(form->login.passInput), "");
 
 	addSuccessfulNotification(form->login.widgets, 1);
-	free(encryptedAesKey);
+	free(aesKey);
 	free(storagePath);
 	free(storedString);
 	fclose(storageFile);
@@ -384,7 +399,10 @@ void list_login(GtkWidget *button, gpointer passData) {
     GtkWidget *passInput = data->passInput;
     GtkWidget *passLabel = data->passLabel;
     GtkWidget *box = data->box;
-    const char *accPass = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(data->passInput)));
+    const char *accPassTemp = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(data->passInput)));
+    
+    // Make a copy of the password to avoid memory issues
+    char *accPass = strdup(accPassTemp);
 
     if (verifyPassword(accPass)) {
 	//remove verification widgets
@@ -393,13 +411,48 @@ void list_login(GtkWidget *button, gpointer passData) {
 	gtk_box_remove(GTK_BOX(box), passInput);
 
 	//Load entries properly
+	unsigned char *aesKey = retrieveDecryptedAESKey(accPass);
+	if (!aesKey) {
+	    GtkWidget *errorLabel = gtk_label_new("Failed to decrypt AES key - wrong password?");
+	    gtk_box_append(GTK_BOX(box), errorLabel);
+	    free(accPass);
+	    return;
+	}
+	
+	char fullpath[512];
+	snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/storage.db", getHomeEnv());
+	FILE *storageFile = fopen(fullpath, "r");
 
+	if (storageFile) {
+	    char buffer[512];
+	    while (fgets(buffer, sizeof(buffer), storageFile)) {
+		// Remove newline character properly
+		size_t len = strlen(buffer);
+		if (len > 0 && buffer[len-1] == '\n') {
+		    buffer[len - 1] = '\0';
+		}
+
+		// Skip empty lines
+		if (strlen(buffer) == 0) continue;
+
+		char *decrypted = decryptText(buffer, aesKey);
+		if (decrypted) {
+		    GtkWidget *decryptedLabel = gtk_label_new(decrypted);
+		    gtk_box_append(GTK_BOX(box), decryptedLabel);
+		    free(decrypted);
+		}
+	    }
+	    fclose(storageFile);
+	}
+	
+	free(aesKey);
     } else {
 	GtkWidget *failLabel = gtk_label_new("Incorect password try again");
 	gtk_box_append(GTK_BOX(box), failLabel);
 	g_timeout_add_seconds(3, (GSourceFunc)remove_notification_label, failLabel);
     }
     
+    free(accPass);
     return;
 }
 
