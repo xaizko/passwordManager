@@ -172,21 +172,30 @@ int verifyPassword(const char *password) {
     char fullpath[256];
     snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/master.conf", getenv("HOME"));
     FILE *masterConf = fopen(fullpath, "r");
+    if (!masterConf) {
+	free(hexPassword);
+	return 0;
+    }
 
     char line[SHA256_DIGEST_LENGTH * 2 + 2];
     int lineNum = 1;
+    int result = 0;
     while (fgets(line, sizeof(line), masterConf)) {
 	line[strcspn(line, "\n")] = 0;
 
 	if (lineNum == 2) {
 	    if (!strcmp(hexPassword, line)) {
-		return 1;
+		result = 1;
 	    }
+	    break;
 	}
 
 	lineNum++;
     }
-    return 0;
+    
+    fclose(masterConf);
+    free(hexPassword);
+    return result;
 }
 
 unsigned char *retrieveDecryptedAESKey(const char *password) {
@@ -217,14 +226,43 @@ unsigned char *retrieveDecryptedAESKey(const char *password) {
     }
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    if (!ctx) {
+	fprintf(stderr, "Failed to create cipher context\n");
+	return NULL;
+    }
     
     unsigned char *aesKey = malloc(32);
+    if (!aesKey) {
+	fprintf(stderr, "Memory allocation failed\n");
+	EVP_CIPHER_CTX_free(ctx);
+	return NULL;
+    }
+    
     int len, plaintext_len = 0;
 
-    EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv);
-    EVP_DecryptUpdate(ctx, aesKey, &len, encryptedAesKey, encryptedKeyLen);
-
+    if (!EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, derivedKey, iv)) {
+	fprintf(stderr, "DecryptInit failed\n");
+	free(aesKey);
+	EVP_CIPHER_CTX_free(ctx);
+	return NULL;
+    }
+    
+    if (!EVP_DecryptUpdate(ctx, aesKey, &len, encryptedAesKey, encryptedKeyLen)) {
+	fprintf(stderr, "DecryptUpdate failed\n");
+	free(aesKey);
+	EVP_CIPHER_CTX_free(ctx);
+	return NULL;
+    }
     plaintext_len += len;
+    
+    if (!EVP_DecryptFinal_ex(ctx, aesKey + len, &len)) {
+	fprintf(stderr, "DecryptFinal failed - wrong password or corrupted data\n");
+	free(aesKey);
+	EVP_CIPHER_CTX_free(ctx);
+	return NULL;
+    }
+    plaintext_len += len;
+
     EVP_CIPHER_CTX_free(ctx);
 
     return aesKey;
