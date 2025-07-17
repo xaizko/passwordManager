@@ -50,6 +50,7 @@ typedef struct {
 
 typedef struct {
     GtkWidget *box;
+    AppWidgets *widgets;
 
     //Login screen children
     GtkWidget *passInput;

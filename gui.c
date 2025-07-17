@@ -78,21 +78,36 @@ void handle_page_switch(GtkButton *button, gpointer user_data) {
     AppWidgets *widgets = (AppWidgets *)user_data;
     const char *page_name = g_object_get_data(G_OBJECT(button), "page");
     if (page_name) {
+        if (strcmp(page_name, "list") == 0) {
+            GtkWidget *child = gtk_widget_get_first_child(widgets->list_page);
+            while (child) {
+                GtkWidget *next = gtk_widget_get_next_sibling(child);
+                gtk_box_remove(GTK_BOX(widgets->list_page), child);
+                child = next;
+            }
+            widgets->listPassInput = gtk_entry_new();
+            setup_list_page(widgets);
+        }
 	switch_page(widgets, page_name);
     } else{
 	g_warning("No page found with that name!");
     }
 }
-
 //clears list page widgets to update 
-void clear_list_page_content(AppWidgets *widgets) {
+void clear_list_entries_only(AppWidgets *widgets) {
     GtkWidget *box = widgets->list_page;
     GtkWidget *child = gtk_widget_get_first_child(box);
-
+    
+    int skip_count = 0;
+    while (child && skip_count < 3) {
+        child = gtk_widget_get_next_sibling(child);
+        skip_count++;
+    }
+    
     while (child) {
-	GtkWidget *next = gtk_widget_get_next_sibling(child);
-	gtk_box_remove(GTK_BOX(box), child);
-	child = next;
+        GtkWidget *next = gtk_widget_get_next_sibling(child);
+        gtk_box_remove(GTK_BOX(box), child);
+        child = next;
     }
 }
 
@@ -393,6 +408,7 @@ void setup_list_page(AppWidgets *widgets) {
     entryData->passInput = passEntry;
     entryData->passLabel = passLabel;
     entryData->box = box;
+    entryData->widgets = widgets;
 
     //create button
     GtkWidget *submitButton = gtk_button_new_with_label("See Accounts");
