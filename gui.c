@@ -84,6 +84,18 @@ void handle_page_switch(GtkButton *button, gpointer user_data) {
     }
 }
 
+//clears list page widgets to update 
+void clear_list_page_content(AppWidgets *widgets) {
+    GtkWidget *box = widgets->list_page;
+    GtkWidget *child = gtk_widget_get_first_child(box);
+
+    while (child) {
+	GtkWidget *next = gtk_widget_get_next_sibling(child);
+	gtk_box_remove(GTK_BOX(box), child);
+	child = next;
+    }
+}
+
 //builds the warning page
 void setup_warning_page(AppWidgets *widgets) {
     GtkWidget *warningBox = widgets->warning_page;

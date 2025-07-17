@@ -81,5 +81,6 @@ void remove_notification_label(gpointer data);
 
 //Listing accounts functionality
 void list_login(GtkWidget *button, gpointer passData);
+void clear_list_page_content(AppWidgets *widgets);
 
 #endif // GUI_H
