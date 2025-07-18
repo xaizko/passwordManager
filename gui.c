@@ -18,7 +18,6 @@ void activate(GtkApplication *app, gpointer user_data) {
     widgets->menu_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->login_page = gtk_grid_new();
     widgets->add_page = gtk_grid_new();
-    widgets->delete_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->list_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     widgets->generate_page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 
@@ -42,7 +41,6 @@ void activate(GtkApplication *app, gpointer user_data) {
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->menu_page, "menu");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->login_page, "login");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->add_page, "add");
-    gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->delete_page, "delete");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->list_page, "list");
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->generate_page, "generate");
 
@@ -132,22 +130,17 @@ void setup_menu_page(AppWidgets *widgets) {
 
     //create buttons
     GtkWidget *add_btn = gtk_button_new_with_label("Add Password");
-    GtkWidget *del_btn = gtk_button_new_with_label("Delete Password");
     GtkWidget *list_btn = gtk_button_new_with_label("List Passwords");
     GtkWidget *gen_btn = gtk_button_new_with_label("Generate Pssword");
 
     //Add to box
     gtk_box_append(GTK_BOX(menu), add_btn);
-    gtk_box_append(GTK_BOX(menu), del_btn);
     gtk_box_append(GTK_BOX(menu), list_btn);
     gtk_box_append(GTK_BOX(menu), gen_btn);
 
     //Navigation hooks
     g_object_set_data(G_OBJECT(add_btn), "page", "add");
     g_signal_connect(add_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
-
-    g_object_set_data(G_OBJECT(del_btn), "page", "delete");
-    g_signal_connect(del_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
 
     g_object_set_data(G_OBJECT(list_btn), "page", "list");
     g_signal_connect(list_btn, "clicked", G_CALLBACK(handle_page_switch), widgets);
@@ -474,6 +467,7 @@ void list_login(GtkWidget *button, gpointer passData) {
 		if (decrypted) {
 		    while (token != NULL) {
 			GtkWidget *nextLabel = NULL;
+			GtkWidget *deleteLabel = NULL;
 			switch (count) {
 			    case 1: { //app case
 				char *formatted = g_strdup_printf("Application: %s", token);
@@ -496,6 +490,7 @@ void list_login(GtkWidget *button, gpointer passData) {
 			}
 			if (nextLabel) {
 			    gtk_box_append(GTK_BOX(entryBox), nextLabel);
+			    deleteLabel = gtk_button_new_with_label("Delete");
 			}
 
 			token = strtok(NULL, "|");

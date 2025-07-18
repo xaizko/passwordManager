@@ -16,7 +16,6 @@ typedef struct {
     GtkWidget *login_page;
     GtkWidget *menu_page;
     GtkWidget *add_page;
-    GtkWidget *delete_page;
     GtkWidget *list_page;
     GtkWidget *generate_page;
 
