@@ -467,7 +467,6 @@ void list_login(GtkWidget *button, gpointer passData) {
 		if (decrypted) {
 		    while (token != NULL) {
 			GtkWidget *nextLabel = NULL;
-			GtkWidget *deleteLabel = NULL;
 			switch (count) {
 			    case 1: { //app case
 				char *formatted = g_strdup_printf("Application: %s", token);
@@ -490,12 +489,13 @@ void list_login(GtkWidget *button, gpointer passData) {
 			}
 			if (nextLabel) {
 			    gtk_box_append(GTK_BOX(entryBox), nextLabel);
-			    deleteLabel = gtk_button_new_with_label("Delete");
 			}
 
 			token = strtok(NULL, "|");
 			count++;
 		    }
+		    GtkWidget *deleteLabel = gtk_button_new_with_label("Delete");
+		    gtk_box_append(GTK_BOX(entryBox), deleteLabel);
 		    free(decrypted);
 		}
 		gtk_box_append(GTK_BOX(box), entryBox);
