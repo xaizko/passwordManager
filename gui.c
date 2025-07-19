@@ -495,6 +495,7 @@ void list_login(GtkWidget *button, gpointer passData) {
 			count++;
 		    }
 		    GtkWidget *deleteLabel = gtk_button_new_with_label("Delete");
+		    g_signal_connect(deleteLabel, "clicked", G_CALLBACK(delete_entry), entryBox);
 		    gtk_box_append(GTK_BOX(entryBox), deleteLabel);
 		    free(decrypted);
 		}
@@ -512,5 +513,11 @@ void list_login(GtkWidget *button, gpointer passData) {
     
     free(accPass);
     return;
+}
+
+void delete_entry(GtkWidget *button, gpointer user_data) {
+    GtkWidget *entryBox = (GtkWidget *)user_data;
+    GtkWidget *parentBox = gtk_widget_get_parent(entryBox); 
+    gtk_box_remove(GTK_BOX(parentBox), entryBox);
 }
 
