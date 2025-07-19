@@ -495,8 +495,11 @@ void list_login(GtkWidget *button, gpointer passData) {
 			count++;
 		    }
 		    GtkWidget *deleteLabel = gtk_button_new_with_label("Delete");
+		    char *encryptedLine = strdup(buffer);
+		    g_object_set_data_full(G_OBJECT(deleteLabel), "encrypted_line", encryptedLine, g_free);
 		    g_signal_connect(deleteLabel, "clicked", G_CALLBACK(delete_entry), entryBox);
 		    gtk_box_append(GTK_BOX(entryBox), deleteLabel);
+
 		    free(decrypted);
 		}
 		gtk_box_append(GTK_BOX(box), entryBox);
@@ -518,6 +521,36 @@ void list_login(GtkWidget *button, gpointer passData) {
 void delete_entry(GtkWidget *button, gpointer user_data) {
     GtkWidget *entryBox = (GtkWidget *)user_data;
     GtkWidget *parentBox = gtk_widget_get_parent(entryBox); 
+
+    char *encryptedLine = g_object_get_data(G_OBJECT(button), "encrypted_line");
+
+    if (encryptedLine) {
+	char fullpath[512];
+	snprintf(fullpath, sizeof(fullpath), "%s/.config/passwordManager/storage.db", getHomeEnv());
+
+	FILE *originalFile = fopen(fullpath, "r");
+	char tempPath[520];
+	snprintf(tempPath, sizeof(tempPath), "%s.temp", fullpath);
+	FILE *tempFile = fopen(tempPath, "w");
+
+	if (originalFile && tempFile) {
+	    char buffer[512];
+	    while (fgets(buffer, sizeof(buffer), originalFile)) {
+		buffer[strcspn(buffer, "\n")] = '\0';
+
+		if (strcmp(buffer, encryptedLine) != 0) {
+		    fprintf(tempFile, "%s\n", buffer);
+		}
+	    }
+
+	    fclose(originalFile);
+	    fclose(tempFile);
+
+	    remove(fullpath);
+	    rename(tempPath, fullpath);
+	}
+    }
+
     gtk_box_remove(GTK_BOX(parentBox), entryBox);
 }
 
