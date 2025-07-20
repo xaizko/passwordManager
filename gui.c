@@ -581,11 +581,15 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(centerBox), sliderBox);
 
     //Length slider
-    GtkAdjustment *adjustment = gtk_adjustment_new(12, 4, 32, 1, 1, 0);
+    GtkAdjustment *adjustment = gtk_adjustment_new(10, 4, 32, 1, 1, 0);
     GtkWidget *lengthSlider = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
     gtk_widget_set_size_request(lengthSlider, 300, -1);
     gtk_scale_set_digits(GTK_SCALE(lengthSlider), 0);
     gtk_box_append(GTK_BOX(sliderBox), lengthSlider);
+
+    //Length label
+    GtkWidget *lengthLabel = gtk_label_new("10");
+    gtk_box_append(GTK_BOX(sliderBox), lengthLabel);
     
     //return to menu
     //GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
