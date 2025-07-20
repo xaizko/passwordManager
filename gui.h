@@ -31,6 +31,9 @@ typedef struct {
 
     //Widgets for list_page
     GtkWidget *listPassInput;
+
+    //Widgets for generate page
+    GtkWidget *generatePassInput;
 } AppWidgets;
 
 //info object for logging in 

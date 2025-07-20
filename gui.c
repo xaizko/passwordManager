@@ -35,6 +35,9 @@ void activate(GtkApplication *app, gpointer user_data) {
 
     //List page entries
     widgets->listPassInput = gtk_entry_new();
+    
+    //Generate page entries
+    widgets->generatePassInput = gtk_entry_new();
 
     //Add to stack
     gtk_stack_add_named(GTK_STACK(widgets->stack), widgets->warning_page, "warning");
@@ -564,6 +567,13 @@ void setup_generate_page(AppWidgets *widgets) {
     GtkWidget *generateLabel = gtk_label_new("Password Generator");
     gtk_widget_set_halign(generateLabel, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(centerBox), generateLabel);
+
+    //generated password display
+    GtkWidget *passwordEntry = widgets->generatePassInput;
+    gtk_entry_set_placeholder_text(GTK_ENTRY(passwordEntry), "Generated Password");
+    gtk_editable_set_editable(GTK_EDITABLE(passwordEntry), FALSE);
+    gtk_widget_set_size_request(passwordEntry, 400, -1);
+    gtk_box_append(GTK_BOX(centerBox), passwordEntry);
     
     //return to menu
     //GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
