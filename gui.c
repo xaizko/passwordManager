@@ -555,16 +555,20 @@ void delete_entry(GtkWidget *button, gpointer user_data) {
 
 void setup_generate_page(AppWidgets *widgets) {
     GtkWidget *generate = widgets->generate_page;
-    GtkWidget *centerBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    GtkWidget *centerBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_halign(centerBox, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(centerBox, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(generate), centerBox);
 
+    //title
     GtkWidget *generateLabel = gtk_label_new("Password Generator");
+    gtk_widget_set_halign(generateLabel, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(centerBox), generateLabel);
     
     //return to menu
-    GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
-    g_object_set_data(G_OBJECT(menuButton), "page", "menu");
-    gtk_box_append(GTK_BOX(centerBox), menuButton);
-    g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
+    //GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
+    //g_object_set_data(G_OBJECT(menuButton), "page", "menu");
+    //gtk_box_append(GTK_BOX(centerBox), menuButton);
+    //g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
