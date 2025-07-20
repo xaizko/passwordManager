@@ -580,6 +580,7 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_widget_set_halign(sliderBox, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(centerBox), sliderBox);
 
+    //Length slider
     GtkAdjustment *adjustment = gtk_adjustment_new(12, 4, 32, 1, 1, 0);
     GtkWidget *lengthSlider = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
     gtk_widget_set_size_request(lengthSlider, 300, -1);
