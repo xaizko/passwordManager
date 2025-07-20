@@ -581,7 +581,7 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(centerBox), sliderBox);
 
     //Length slider
-    GtkAdjustment *adjustment = gtk_adjustment_new(10, 4, 32, 1, 1, 0);
+    GtkAdjustment *adjustment = gtk_adjustment_new(10, 8, 32, 1, 1, 0);
     GtkWidget *lengthSlider = gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, adjustment);
     gtk_widget_set_size_request(lengthSlider, 300, -1);
     gtk_scale_set_digits(GTK_SCALE(lengthSlider), 0);
@@ -590,6 +590,7 @@ void setup_generate_page(AppWidgets *widgets) {
     //Length label
     GtkWidget *lengthLabel = gtk_label_new("10");
     gtk_box_append(GTK_BOX(sliderBox), lengthLabel);
+    g_signal_connect(lengthSlider, "value-changed", G_CALLBACK(update_length_label), lengthLabel);
     
     //return to menu
     //GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
@@ -598,3 +599,11 @@ void setup_generate_page(AppWidgets *widgets) {
     //g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
+//Function to update label
+void update_length_label(GtkRange *range, gpointer user_data) {
+    GtkWidget *label = (GtkWidget *)user_data;
+    int value = (int)gtk_range_get_value(range);
+    char text[10];
+    snprintf(text, sizeof(text), "%d", value);
+    gtk_label_set_text(GTK_LABEL(label), text);
+}
