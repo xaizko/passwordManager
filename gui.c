@@ -49,9 +49,8 @@ void activate(GtkApplication *app, gpointer user_data) {
     setup_menu_page(widgets);
     setup_login_page(widgets);
     setup_add_page(widgets);
-    //setup_delete_page(widgets);
     setup_list_page(widgets);
-    //setup_generate_page(widgets);
+    setup_generate_page(widgets);
     
     //Choose initial page
     char fullpath[512];
@@ -552,5 +551,20 @@ void delete_entry(GtkWidget *button, gpointer user_data) {
     }
 
     gtk_box_remove(GTK_BOX(parentBox), entryBox);
+}
+
+void setup_generate_page(AppWidgets *widgets) {
+    GtkWidget *generate = widgets->generate_page;
+    GtkWidget *centerBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(generate), centerBox);
+
+    GtkWidget *generateLabel = gtk_label_new("Password Generator");
+    gtk_box_append(GTK_BOX(centerBox), generateLabel);
+    
+    //return to menu
+    GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
+    g_object_set_data(G_OBJECT(menuButton), "page", "menu");
+    gtk_box_append(GTK_BOX(centerBox), menuButton);
+    g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
