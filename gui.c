@@ -592,6 +592,7 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(sliderBox), lengthLabel);
     g_signal_connect(lengthSlider, "value-changed", G_CALLBACK(update_length_label), lengthLabel);
     
+    //Generate button
     GtkWidget *generateButton = gtk_button_new_with_label("Generate Password");
     gtk_widget_set_halign(generateButton, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(centerBox), generateButton);
