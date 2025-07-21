@@ -592,10 +592,16 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(sliderBox), lengthLabel);
     g_signal_connect(lengthSlider, "value-changed", G_CALLBACK(update_length_label), lengthLabel);
     
+    //Populating required info 
+    GenerateForm *generateData = g_new(GenerateForm, 1);
+    generateData->passwordLabel = passwordEntry;
+    generateData->lengthLabel = lengthLabel;
+
     //Generate button
     GtkWidget *generateButton = gtk_button_new_with_label("Generate Password");
     gtk_widget_set_halign(generateButton, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(centerBox), generateButton);
+    g_signal_connect(generateButton, "clicked", G_CALLBACK(generate_password), generateData);
 
     //return to menu
     GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
@@ -612,4 +618,45 @@ void update_length_label(GtkRange *range, gpointer user_data) {
     char text[10];
     snprintf(text, sizeof(text), "%d", value);
     gtk_label_set_text(GTK_LABEL(label), text);
+}
+
+void generate_password(GtkWidget *button, gpointer user_data) {
+    const char *lower = "abcdefghijklmnopqrstuvwxyz";
+    const char *upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char *digits = "0123456789";
+    const char *symbols = "!@#$%^&*()-_=+[]{};:,.<>?/|~";
+    const char *all = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{};:,.<>?/|~";
+
+    GenerateForm *generateData = (GenerateForm *)user_data;
+    GtkWidget *passLabel = generateData->passwordLabel;
+    GtkWidget *lengthLabel = generateData->lengthLabel;
+
+    //extract length
+    const char *lengthText = gtk_label_get_text(GTK_LABEL(lengthLabel));
+    int length = atoi(lengthText);
+
+    char *password = g_malloc0(length + 1);
+
+    //ensure key characters
+    password[0] = upper[g_random_int_range(0, strlen(upper))];
+    password[1] = digits[g_random_int_range(0, strlen(digits))];
+    password[2] = symbols[g_random_int_range(0, strlen(symbols))];
+
+    for (int i = 3; i < length; i++) {
+	password[i] = all[g_random_int_range(0, strlen(all))];
+    }
+
+    //shuffle password
+    for (int i = length - 1; i > 0; i--) {
+	int j = g_random_int_range(0, i+1);
+	char tmp = password[i];
+	password[i] = password[j];
+	password[j] = tmp;
+    }
+
+    gtk_editable_set_editable(GTK_EDITABLE(generateData->passwordLabel), TRUE);
+    gtk_editable_set_text(GTK_EDITABLE(generateData->passwordLabel), password);
+    gtk_editable_set_editable(GTK_EDITABLE(generateData->passwordLabel), FALSE);
+    g_free(password);
+
 }

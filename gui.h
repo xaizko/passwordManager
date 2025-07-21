@@ -59,6 +59,11 @@ typedef struct {
     GtkWidget *passLabel;
 } ListForm;
 
+typedef struct {
+    GtkWidget *passwordLabel;
+    GtkWidget *lengthLabel;
+} GenerateForm;
+
 //entry function
 void activate(GtkApplication *app, gpointer user_data);
 
@@ -90,5 +95,6 @@ void delete_entry(GtkWidget *button, gpointer user_data);
 
 //Generating password functionality
 void update_length_label(GtkRange *range, gpointer user_data);
+void generate_password(GtkWidget *button, gpointer user_data);
 
 #endif // GUI_H
