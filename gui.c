@@ -598,10 +598,11 @@ void setup_generate_page(AppWidgets *widgets) {
     gtk_box_append(GTK_BOX(centerBox), generateButton);
 
     //return to menu
-    //GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
-    //g_object_set_data(G_OBJECT(menuButton), "page", "menu");
-    //gtk_box_append(GTK_BOX(centerBox), menuButton);
-    //g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
+    GtkWidget *menuButton = gtk_button_new_with_label("Return to Menu");
+    gtk_widget_set_halign(menuButton, GTK_ALIGN_CENTER);
+    g_object_set_data(G_OBJECT(menuButton), "page", "menu");
+    gtk_box_append(GTK_BOX(centerBox), menuButton);
+    g_signal_connect(menuButton, "clicked", G_CALLBACK(handle_page_switch), widgets);
 }
 
 //Function to update label
